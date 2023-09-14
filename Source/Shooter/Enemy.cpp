@@ -14,6 +14,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/BoxComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Ammo.h"
 
 // Sets default values
 AEnemy::AEnemy() :
@@ -54,6 +55,14 @@ AEnemy::AEnemy() :
 	LeftWeaponCollision->SetupAttachment(GetMesh(), FName("LeftWeaponBone"));
 	RightWeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Weapon Box"));
 	RightWeaponCollision->SetupAttachment(GetMesh(), FName("RightWeaponBone"));
+
+	static ConstructorHelpers::FClassFinder<AAmmo> BPClass(TEXT("/Game/_Game/Ammo/Ammo9mmBP"));
+
+	if (BPClass.Class)
+	{
+		AmmoBlueprint = BPClass.Class;
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -165,8 +174,46 @@ void AEnemy::Die()
 			true
 		);
 		EnemyController->StopMovement();
+
+		
+
+		
+
 	}
 }
+
+
+void AEnemy::SpawnAmmo()
+{
+
+
+	UWorld* World = GetWorld();
+
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// 원하는 위치와 회전을 설정합니다.
+		FVector Location = GetActorLocation();
+		FRotator Rotation = GetActorRotation();
+
+		// Ammo9mmBP 인스턴스를 생성합니다.
+		AAmmo* SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBlueprint, Location, Rotation, SpawnParams);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 
 void AEnemy::PlayHitMontage(FName Section, float PlayRate)
 {
@@ -501,6 +548,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	{
 		Health = 0.f;
 		Die();
+		SpawnAmmo();
 	}
 	else
 	{

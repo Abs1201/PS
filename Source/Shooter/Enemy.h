@@ -239,6 +239,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	float DeathTime;
 
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+		UClass* AmmoBlueprint;
+
+
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -256,4 +261,7 @@ public:
 	void ShowHitNumber(int32 Damage, FVector HitLocation, bool bHeadShot);
 
 	FORCEINLINE UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
+
+
+	void SpawnAmmo();
 };
