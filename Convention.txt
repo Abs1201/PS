@@ -1,0 +1,12 @@
+BP = Blueprint
+WBP = WidgetBlueprint
+
+ABP = AnimationBlueprint
+
+BT = BehaviorTree
+BB = BlackBoard
+
+SM = StaticMesh
+
+IA = InputAction
+IMC = InputMappingContext
