@@ -1,7 +1,7 @@
 {
 	"folders": [
 		{
-			"name": "Shooter",
+			"name": "PS",
 			"path": "."
 		},
 		{
@@ -10,8 +10,7 @@
 		}
 	],
 	"settings": {
-		"typescript.tsc.autoDetect": "off",
-		"dotnet.defaultSolution": "UE5/Engine/Source/Programs/UnrealBuildTool/UnrealBuildTool.sln"
+		"typescript.tsc.autoDetect": "off"
 	},
 	"extensions": {
 		"recommendations": [
