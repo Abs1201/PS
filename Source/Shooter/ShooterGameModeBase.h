@@ -26,6 +26,8 @@ public:
 	void StartGame();
 	UFUNCTION(BlueprintCallable)
 	void EndGame();
+
+	void AddScore(float NewScore);
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
