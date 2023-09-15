@@ -74,8 +74,8 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # Assets from Content folder
-Content/
-!Content/Test
+Content/*
+!Content/_Game
 
 .vs/
 .vscode/
