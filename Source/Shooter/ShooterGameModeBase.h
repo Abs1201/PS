@@ -9,7 +9,8 @@
 /**
  * 
  */
-enum class StateOfGame: uint8{
+UENUM(BlueprintType)
+enum class EStateOfGame: uint8{
 	Ready,
 	Play,
 	End,
@@ -21,21 +22,24 @@ class SHOOTER_API AShooterGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION(BlueprintCallable)
 	void StartGame();
+	UFUNCTION(BlueprintCallable)
 	void EndGame();
 	
 protected:
-	UPROPERTY(VisibleAnywhere, BluprintReadOnly, Category=GameMode)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	FDateTime StartTime;
-	UPROPERTY(VisibleAnywhere, BluprintReadOnly, Cataegory=GameMode)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	FDateTime EndTime;
+	int32 ElapsedSeconds;
 
-	UPROPERTY(VisibleAnywhere, BluprintReadOnly, Category=GameMode)
-	StateOfGame GameState;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
+	EStateOfGame StateOfGame;
 
-	UPROPERTY(VisibleAnywhere, BluprintReadOnly, Category=GameMode)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	float Score;
-	UPROPERTY(VisibleAnywhere, BluprintReadOnly, Category=GameMode)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	int32 Rank;
 
 public:
@@ -43,8 +47,8 @@ public:
 	FORCEINLINE void SetStartTime(FDateTime Time){StartTime=Time;}
 	FORCEINLINE FDateTime GetEndTime(){return EndTime;}
 	FORCEINLINE void SetEndTime(FDateTime Time){EndTime=Time;}
-	FORCEINLINE StateOfGame GetGameState(){return GameState;} 
-	FORCEINLINE void SetGameState(StateOfGame State){GameState=State}
+	FORCEINLINE EStateOfGame GetStateOfGame(){return StateOfGame;} 
+	FORCEINLINE void SetStateOfGame(EStateOfGame NewState){StateOfGame=NewState;}
 	FORCEINLINE float GetScore(){return Score;}
 	FORCEINLINE void SetScore(float NewScore){Score=NewScore;}
 	FORCEINLINE int32 GetRank(){return Rank;}

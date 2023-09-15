@@ -1160,6 +1160,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 	TraceForItems();
 	// Interpolate the capsule half height based on crouching/standing
 	InterpCapsuleHalfHeight(DeltaTime);
+
 }
 
 // Called to bind functionality to input
