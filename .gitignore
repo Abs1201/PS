@@ -75,6 +75,7 @@ DerivedDataCache/*
 
 # Assets from Content folder
 Content/
+!Content/Test
 
 .vs/
 .vscode/
