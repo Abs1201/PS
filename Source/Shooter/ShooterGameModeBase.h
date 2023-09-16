@@ -26,7 +26,7 @@ public:
 	void StartGame();
 	UFUNCTION(BlueprintCallable)
 	void EndGame();
-
+	UFUNCTION(BlueprintCallable)
 	void AddScore(float NewScore);
 	
 protected:

@@ -15,6 +15,7 @@
 #include "Components/BoxComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Ammo.h"
+#include "ShooterGameModeBase.h"
 
 // Sets default values
 AEnemy::AEnemy() :
@@ -159,6 +160,9 @@ void AEnemy::Die()
 	if (bDying) return;
 	bDying = true;
 
+	AShooterGameModeBase* GameMode = Cast<AShooterGameModeBase>(UGameplayStatics::GetGameMode(this));
+	GameMode->AddScore(EnemyScore);
+
 	HideHealthBar();
 
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -182,7 +186,6 @@ void AEnemy::Die()
 	}
 }
 
-
 void AEnemy::SpawnAmmo()
 {
 
@@ -203,17 +206,6 @@ void AEnemy::SpawnAmmo()
 		AAmmo* SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBlueprint, Location, Rotation, SpawnParams);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
 
 void AEnemy::PlayHitMontage(FName Section, float PlayRate)
 {
