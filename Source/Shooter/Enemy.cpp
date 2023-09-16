@@ -195,11 +195,11 @@ void AEnemy::SpawnAmmo()
 		SpawnParams.Owner = this;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		// 원하는 위치와 회전을 설정합니다.
+		//
 		FVector Location = GetActorLocation();
 		FRotator Rotation = GetActorRotation();
 
-		// Ammo9mmBP 인스턴스를 생성합니다.
+		//
 		AAmmo* SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBlueprint, Location, Rotation, SpawnParams);
 	}
 }
