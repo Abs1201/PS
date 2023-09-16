@@ -21,7 +21,11 @@ void AShooterGameModeBase::EndGame()
         SetEndTime(FDateTime::Now());
         FTimespan ElapsedTime = EndTime-StartTime;
         ElapsedSeconds = ElapsedTime.GetTotalSeconds();
+        if(ElapsedSeconds < 180){
+            AddScore(ElapsedSeconds);
+        }
     }
+    UE_LOG(LogTemp, Display, TEXT("Score: %f"), Score);
 }
 
 void AShooterGameModeBase::AddScore(float NewScore)

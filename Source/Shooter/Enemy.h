@@ -241,7 +241,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* AmmoBlueprint;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode, meta = (AllowPrivateAccess = "true"))
+	float EnemyScore;
 
 
 public:	
@@ -261,6 +263,8 @@ public:
 	void ShowHitNumber(int32 Damage, FVector HitLocation, bool bHeadShot);
 
 	FORCEINLINE UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
+
+	FORCEINLINE float GetEnemyScore() const {return EnemyScore; }
 
 
 	void SpawnAmmo();
