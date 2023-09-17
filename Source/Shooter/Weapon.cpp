@@ -119,7 +119,13 @@ void AWeapon::OnConstruction(const FTransform& Transform)
 			FireSound = WeaponDataRow->FireSound;
 			BoneToHide = WeaponDataRow->BoneToHide;
 			bAutomatic = WeaponDataRow->bAutomatic;
+
 			Damage = WeaponDataRow->Damage;
+			if (GetItemmRarity() == EItemRarity::EIR_Legendary)
+			{
+				Damage = WeaponDataRow->Damage + 10;
+			}
+			
 			HeadShotDamage = WeaponDataRow->HeadShotDamage;
 		}
 
@@ -171,6 +177,8 @@ void AWeapon::DecrementAmmo()
 		--Ammo;
 	}
 }
+
+
 
 void AWeapon::StartSlideTimer()
 {

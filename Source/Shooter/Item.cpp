@@ -517,6 +517,15 @@ void AItem::SetItemState(EItemState State)
 	SetItemProperties(State);
 }
 
+
+
+
+
+
+
+
+
+
 void AItem::StartItemCurve(AShooterCharacter* Char, bool bForcePlaySound)
 {
 	// Store a handle to the Character

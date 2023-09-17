@@ -16,6 +16,7 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Ammo.h"
 #include "ShooterGameModeBase.h"
+#include "Weapon.h"
 
 // Sets default values
 AEnemy::AEnemy() :
@@ -57,11 +58,19 @@ AEnemy::AEnemy() :
 	RightWeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Weapon Box"));
 	RightWeaponCollision->SetupAttachment(GetMesh(), FName("RightWeaponBone"));
 
-	static ConstructorHelpers::FClassFinder<AAmmo> BPClass(TEXT("/Game/_Game/Ammo/Ammo9mmBP"));
+	static ConstructorHelpers::FClassFinder<AAmmo> AmmoClass(TEXT("/Game/_Game/Ammo/Ammo9mmBP"));
 
-	if (BPClass.Class)
+	if (AmmoClass.Class)
 	{
-		AmmoBlueprint = BPClass.Class;
+		AmmoBlueprint = AmmoClass.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<AWeapon> WeaponClass(TEXT("/Game/_Game/Weapons/BaseWeapon/BaseWeaponBP"));
+
+	if (WeaponClass.Class)
+	{
+		WeaponBlueprint = WeaponClass.Class;
+
 	}
 
 }
@@ -198,14 +207,68 @@ void AEnemy::SpawnAmmo()
 		SpawnParams.Owner = this;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		//
 		FVector Location = GetActorLocation();
 		FRotator Rotation = GetActorRotation();
 
-		//
 		AAmmo* SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBlueprint, Location, Rotation, SpawnParams);
 	}
 }
+
+void AEnemy::SpawnHealth()
+{
+
+
+	UWorld* World = GetWorld();
+
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		FVector Location = GetActorLocation();
+		FRotator Rotation = GetActorRotation();
+
+		AActor* SpawneHealth = World->SpawnActor<AActor>(HealthBlueprint, Location, Rotation, SpawnParams);
+	}
+}
+
+
+void AEnemy::SpawnWeapon()
+{
+
+
+	UWorld* World = GetWorld();
+
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		FVector Location = GetActorLocation();
+		FRotator Rotation = GetActorRotation();
+
+
+		AWeapon* DropWeapon = NewObject<AWeapon>(this, WeaponBlueprint);
+			
+
+
+		DropWeapon = World->SpawnActor<AWeapon>(WeaponBlueprint, Location, Rotation, SpawnParams);
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 
 void AEnemy::PlayHitMontage(FName Section, float PlayRate)
 {
@@ -540,7 +603,21 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	{
 		Health = 0.f;
 		Die();
-		SpawnAmmo();
+		
+		AmmoPackPercent = FMath::RandRange(1, 100);
+		if (AmmoPackPercent <= 10)
+		{
+			SpawnAmmo();
+		}
+
+		HealthPackPercent = FMath::RandRange(1, 100);
+		if (HealthPackPercent <= 20)
+		{
+			SpawnHealth();
+		}
+		SpawnWeapon();
+		
+		
 	}
 	else
 	{

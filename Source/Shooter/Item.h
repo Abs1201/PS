@@ -165,6 +165,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	EItemState ItemState;
 
+
+
 	/** The curve asset to use for the item's Z location when interping */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	class UCurveFloat* ItemZCurve;
@@ -293,6 +295,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Rarity, meta = (AllowPrivateAccess = "true"))
 	UTexture2D* IconBackground;
 
+
+
+
 public:
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
@@ -321,6 +326,8 @@ public:
 	FORCEINLINE FLinearColor GetGlowColor() const { return GlowColor; }
 	FORCEINLINE int32 GetMaterialIndex() const { return MaterialIndex; }
 	FORCEINLINE void SetMaterialIndex(int32 Index) { MaterialIndex = Index; }
+	FORCEINLINE EItemRarity GetItemmRarity() const {return ItemRarity;}
+
 
 	/** Called from the AShooterCharacter class */
 	void StartItemCurve(AShooterCharacter* Char, bool bForcePlaySound = false);

@@ -251,6 +251,8 @@ public:
 	FORCEINLINE float GetDamage() const { return Damage; }
 	FORCEINLINE float GetHeadShotDamage() const { return HeadShotDamage; }
 
+
+
 	void StartSlideTimer();
 
 	void ReloadAmmo(int32 Amount);
