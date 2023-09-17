@@ -3,10 +3,19 @@
 
 #include "ShooterPlayerController.h"
 #include "Blueprint/UserWidget.h"
+#include "ShooterGameModeBase.h"
+#include <Kismet/GameplayStatics.h>
 
 AShooterPlayerController::AShooterPlayerController()
 {
 
+}
+
+void AShooterPlayerController::OnEndGame(){
+	UUserWidget* Widget = CreateWidget(this, ResultWidget);
+	if(Widget){
+		Widget->AddToViewport();
+	}
 }
 
 void AShooterPlayerController::BeginPlay()
@@ -22,5 +31,10 @@ void AShooterPlayerController::BeginPlay()
 			HUDOverlay->AddToViewport();
 			HUDOverlay->SetVisibility(ESlateVisibility::Visible);
 		}
+	}
+
+	AShooterGameModeBase* GameMode = Cast<AShooterGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if(GameMode){
+		GameMode->OnEndGame.AddUniqueDynamic(this, &AShooterPlayerController::OnEndGame);
 	}
 }
