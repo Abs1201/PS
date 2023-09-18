@@ -2,8 +2,15 @@
 
 
 #include "ShooterGameModeBase.h"
-//#include "Misc/DateTime.h"
+#include "Kismet/GameplayStatics.h"
+#include "PSSaveGame.h"
 
+
+void AShooterGameModeBase::BeginPlay()
+{
+    Super::BeginPlay();
+    LoadRank();
+}
 
 void AShooterGameModeBase::StartGame()
 {
@@ -19,16 +26,65 @@ void AShooterGameModeBase::EndGame()
     if(StateOfGame==EStateOfGame::Play){
         SetStateOfGame(EStateOfGame::End);
         SetEndTime(FDateTime::Now());
-        FTimespan ElapsedTime = EndTime-StartTime;
-        ElapsedSeconds = ElapsedTime.GetTotalSeconds();
+        PlayTime = EndTime-StartTime;
+        int32 ElapsedSeconds = PlayTime.GetTotalSeconds();
         if(ElapsedSeconds < 180){
-            AddScore(ElapsedSeconds);
+            AddScore(180-ElapsedSeconds);
         }
+        UpdateRank();
+        SaveGame();
+        OnEndGame.Broadcast();
     }
-    UE_LOG(LogTemp, Display, TEXT("Score: %f"), Score);
 }
 
 void AShooterGameModeBase::AddScore(float NewScore)
 {
     Score+=NewScore;
 }
+
+void AShooterGameModeBase::UpdateRank()
+{
+    int32 RankIndex=0;
+    for(auto e: Scores){
+        UE_LOG(LogTemp, Display, TEXT("Score: %f"), e);
+        if(e < Score){
+            break;
+        }
+        ++RankIndex;
+    }
+    UE_LOG(LogTemp, Display, TEXT("score_num: %f"), Scores.Num());
+    Rank=RankIndex+1;
+    Scores.Insert(Score, RankIndex);
+    PlayTimes.Insert(PlayTime, RankIndex);
+    //Times.Insert(EndTime, RankIndex);
+    if(Scores.Num() > 10 && !Scores.IsEmpty()){
+        Scores.Pop();
+        PlayTimes.Pop();
+    }
+}
+
+void AShooterGameModeBase::SaveGame()
+{
+    UPSSaveGame* SaveGameInstance = Cast<UPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSSaveGame::StaticClass()));
+    if(SaveGameInstance){
+        SaveGameInstance->Scores = this->Scores;
+        SaveGameInstance->PlayTimes = this->PlayTimes;
+        SaveGameInstance->Ranks = this->Ranks;
+
+        UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("Rank"), 0);
+    }
+}
+
+void AShooterGameModeBase::LoadRank()
+{
+    UPSSaveGame* LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSSaveGame::StaticClass()));
+    LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("Rank"), 0));
+    if(LoadGameInstance){
+        this->Scores = LoadGameInstance->Scores;
+        this->PlayTimes = LoadGameInstance->PlayTimes;
+        this->Ranks = LoadGameInstance->Ranks;
+    }
+    
+}
+
+

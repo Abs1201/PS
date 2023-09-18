@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "ShooterGameModeBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(FShooterGameModeBaseOnEndGame, AShooterGameModeBase, OnEndGame);
 /**
  * 
  */
@@ -20,7 +21,10 @@ UCLASS()
 class SHOOTER_API AShooterGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+protected:
+	virtual void BeginPlay() override;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void StartGame();
@@ -28,21 +32,43 @@ public:
 	void EndGame();
 	UFUNCTION(BlueprintCallable)
 	void AddScore(float NewScore);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateRank();
+	UFUNCTION(BlueprintCallable)
+	void SaveGame();
+	UFUNCTION(BlueprintCallable)
+	void LoadRank();
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FShooterGameModeBaseOnEndGame OnEndGame;
+
 	
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
+	EStateOfGame StateOfGame;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	FDateTime StartTime;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	FDateTime EndTime;
-	int32 ElapsedSeconds;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
-	EStateOfGame StateOfGame;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	float Score;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
+	FTimespan PlayTime;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	int32 Rank;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
+	TArray<float> Scores;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
+	TArray<FTimespan> PlayTimes;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
+	TArray<int32> Ranks;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
+	TArray<FDateTime> Times;
+	
 
 public:
 	FORCEINLINE FDateTime GetStartTime(){return StartTime;}
@@ -53,6 +79,12 @@ public:
 	FORCEINLINE void SetStateOfGame(EStateOfGame NewState){StateOfGame=NewState;}
 	FORCEINLINE float GetScore(){return Score;}
 	FORCEINLINE void SetScore(float NewScore){Score=NewScore;}
+	FORCEINLINE FTimespan GetPlayTime(){ return PlayTime;}
 	FORCEINLINE int32 GetRank(){return Rank;}
 	FORCEINLINE void SetRank(int32 NewRank){Rank=NewRank;}
+	FORCEINLINE TArray<float> GetScores(){ return Scores; }
+	FORCEINLINE TArray<FTimespan> GetPlayTimes(){ return PlayTimes;}
+	FORCEINLINE TArray<int32> GetRanks(){ return Ranks; }
+	FORCEINLINE TArray<FDateTime> GetTimes(){ return Times; }
+	
 };

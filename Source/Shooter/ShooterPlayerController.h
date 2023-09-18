@@ -16,6 +16,9 @@ class SHOOTER_API AShooterPlayerController : public APlayerController
 public:
 	AShooterPlayerController();
 
+	UFUNCTION()
+	void OnEndGame();
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -28,4 +31,8 @@ private:
 	/** Variable to hold the HUD Overlay Widget after creating it */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widgets, meta = (AllowPrivateAccess = "true"))
 	UUserWidget* HUDOverlay;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Widgets, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UUserWidget> ResultWidget;
+	
 };
