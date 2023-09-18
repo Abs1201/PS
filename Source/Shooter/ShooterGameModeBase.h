@@ -40,6 +40,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LoadRank();
 
+	UFUNCTION(BlueprintCallable)
+	void ResetRank();
+
+	void test();
+
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FShooterGameModeBaseOnEndGame OnEndGame;
 
@@ -51,7 +56,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	FDateTime StartTime;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
-	FDateTime EndTime;
+	FDateTime EndTime; // Time
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	float Score;
@@ -62,10 +67,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	TArray<float> Scores;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
-	TArray<FTimespan> PlayTimes;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
-	TArray<int32> Ranks;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	TArray<FDateTime> Times;
 	
@@ -83,8 +84,8 @@ public:
 	FORCEINLINE int32 GetRank(){return Rank;}
 	FORCEINLINE void SetRank(int32 NewRank){Rank=NewRank;}
 	FORCEINLINE TArray<float> GetScores(){ return Scores; }
-	FORCEINLINE TArray<FTimespan> GetPlayTimes(){ return PlayTimes;}
-	FORCEINLINE TArray<int32> GetRanks(){ return Ranks; }
+	//FORCEINLINE TArray<FTimespan> GetPlayTimes(){ return PlayTimes;}
+	// FORCEINLINE TArray<int32> GetRanks(){ return Ranks; }
 	FORCEINLINE TArray<FDateTime> GetTimes(){ return Times; }
 	
 };

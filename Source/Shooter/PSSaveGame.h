@@ -18,8 +18,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	TArray<float> Scores;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
-	TArray<FTimespan> PlayTimes;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
-	TArray<int32> Ranks;
+	TArray<FDateTime> Times;
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
+	// TArray<int32> Ranks;
+	
+	
 
 };

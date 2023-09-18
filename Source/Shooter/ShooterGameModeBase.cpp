@@ -18,6 +18,7 @@ void AShooterGameModeBase::StartGame()
         SetStateOfGame(EStateOfGame::Play);
         SetStartTime(FDateTime::Now());
         SetScore(0.f);
+        test();
     }
 }
 
@@ -42,34 +43,35 @@ void AShooterGameModeBase::AddScore(float NewScore)
     Score+=NewScore;
 }
 
+
+
 void AShooterGameModeBase::UpdateRank()
 {
     int32 RankIndex=0;
     for(auto e: Scores){
-        UE_LOG(LogTemp, Display, TEXT("Score: %f"), e);
+        //UE_LOG(LogTemp, Display, TEXT("Score: %f"), e);
         if(e < Score){
             break;
         }
         ++RankIndex;
     }
-    UE_LOG(LogTemp, Display, TEXT("score_num: %f"), Scores.Num());
+    //UE_LOG(LogTemp, Display, TEXT("score_num: %d"), Scores.Num());
     Rank=RankIndex+1;
     Scores.Insert(Score, RankIndex);
-    PlayTimes.Insert(PlayTime, RankIndex);
-    //Times.Insert(EndTime, RankIndex);
+    Times.Insert(EndTime, RankIndex);
     if(Scores.Num() > 10 && !Scores.IsEmpty()){
         Scores.Pop();
-        PlayTimes.Pop();
+        Times.Pop();
     }
 }
+
 
 void AShooterGameModeBase::SaveGame()
 {
     UPSSaveGame* SaveGameInstance = Cast<UPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSSaveGame::StaticClass()));
     if(SaveGameInstance){
         SaveGameInstance->Scores = this->Scores;
-        SaveGameInstance->PlayTimes = this->PlayTimes;
-        SaveGameInstance->Ranks = this->Ranks;
+        SaveGameInstance->Times = this->Times;
 
         UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("Rank"), 0);
     }
@@ -81,10 +83,37 @@ void AShooterGameModeBase::LoadRank()
     LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("Rank"), 0));
     if(LoadGameInstance){
         this->Scores = LoadGameInstance->Scores;
-        this->PlayTimes = LoadGameInstance->PlayTimes;
-        this->Ranks = LoadGameInstance->Ranks;
+        this->Times = LoadGameInstance->Times;
     }
     
+}
+
+void AShooterGameModeBase::ResetRank()
+{
+    // UPSSaveGame* SaveGameInstance = Cast<UPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSSaveGame::StaticClass()));
+    // if(SaveGameInstance){
+    //     SaveGameInstance->Scores.Empty();
+    //     SaveGameInstance->Times.Empty();
+    // }
+    Scores.Empty();
+    Times.Empty();
+}
+
+void AShooterGameModeBase::test()
+{
+    int32 RankIndex=0;
+    for(auto e: Scores){
+        UE_LOG(LogTemp, Display, TEXT("Score: %f"), e);
+        if(e < Score){
+            break;
+        }
+        ++RankIndex;
+    }
+    UE_LOG(LogTemp, Display, TEXT("score_num: %d"), Scores.Num());
+    UE_LOG(LogTemp, Display, TEXT("Times_num: %d"), Times.Num());
+    Rank=RankIndex+1;
+    UE_LOG(LogTemp, Display, TEXT("Score: %f"), Score);
+    UE_LOG(LogTemp, Display, TEXT("Rank: %d"), Rank);
 }
 
 
