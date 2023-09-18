@@ -762,6 +762,10 @@ void AShooterCharacter::SendBullet()
 					{
 						// Body shot
 						Damage = EquippedWeapon->GetDamage();
+	//					if (EquippedWeapon->GetItemmRarity() == EItemRarity::EIR_Legendary)
+	//					{
+	//						Damage = EquippedWeapon->GetDamage() + 10;
+	//					}
 						UGameplayStatics::ApplyDamage(
 							BeamHitResult.GetActor(),
 							Damage,
