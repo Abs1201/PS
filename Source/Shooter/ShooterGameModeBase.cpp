@@ -46,16 +46,18 @@ void AShooterGameModeBase::UpdateRank()
 {
     int32 RankIndex=0;
     for(auto e: Scores){
+        UE_LOG(LogTemp, Display, TEXT("Score: %f"), e);
         if(e < Score){
             break;
         }
         ++RankIndex;
     }
+    UE_LOG(LogTemp, Display, TEXT("score_num: %f"), Scores.Num());
     Rank=RankIndex+1;
     Scores.Insert(Score, RankIndex);
     PlayTimes.Insert(PlayTime, RankIndex);
     //Times.Insert(EndTime, RankIndex);
-    if(Scores.Num() > 10){
+    if(Scores.Num() > 10 && !Scores.IsEmpty()){
         Scores.Pop();
         PlayTimes.Pop();
     }
