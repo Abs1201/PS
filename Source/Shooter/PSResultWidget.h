@@ -39,6 +39,8 @@ protected:
 	void InitPlayTime();
 	UFUNCTION(BlueprintCallable)
 	void InitRank();
+	UFUNCTION(BlueprintCallable)
+	void InitRankTable();
 
 	
 };

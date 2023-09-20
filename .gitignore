@@ -79,3 +79,5 @@ Content/*
 
 .vs/
 .vscode/
+
+Plugins/*

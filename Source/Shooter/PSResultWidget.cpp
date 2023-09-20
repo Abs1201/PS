@@ -16,7 +16,8 @@ void UPSResultWidget::NativeConstruct()
 
     InitScore();
     InitPlayTime();
-    //InitRank();
+    InitRank();
+    InitRankTable();
 }
 
 void UPSResultWidget::InitScore()
@@ -27,6 +28,8 @@ void UPSResultWidget::InitScore()
         TextScore->SetText(FText::FromString(Text));
     }
 }
+
+
 
 void UPSResultWidget::InitPlayTime()
 {
@@ -56,7 +59,22 @@ void UPSResultWidget::InitPlayTime()
 void UPSResultWidget::InitRank()
 {
     if(GameMode){
-        TArray<int32> Ranks = GameMode->GetRanks();
+        int32 Rank = GameMode->GetRank();
+        FString s = TEXT("Your Rank: #");
+        if(Rank > 10){
+            s = s + TEXT("N/A");
+        }
+        else{
+            s = s + FString::FromInt(Rank);
+        }
+        TextRank->SetText(FText::FromString(s));
+    }
+    
+}
+
+void UPSResultWidget::InitRankTable()
+{
+    if(GameMode){
         TArray<float> Scores = GameMode->GetScores();
         TArray<FDateTime> Times = GameMode->GetTimes();
 

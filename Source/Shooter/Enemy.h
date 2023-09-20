@@ -245,7 +245,7 @@ private:
 
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode, meta = (AllowPrivateAccess = "true"))
-	float EnemyScore;
+	float EnemyScore=50;
 
 	int32 AmmoPackPercent;
 
