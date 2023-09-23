@@ -48,31 +48,31 @@ protected:
 	TObjectPtr<UEditableText> EditWidth;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		TObjectPtr<UEditableText> EditHeight;
+	TObjectPtr<UEditableText> EditHeight;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		TObjectPtr<UButton> ButtonFullscreen;
+	TObjectPtr<UButton> ButtonFullscreen;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		TObjectPtr<UButton> ButtonBorderless;
+	TObjectPtr<UButton> ButtonBorderless;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		TObjectPtr<UButton> ButtonWindowed;
+	TObjectPtr<UButton> ButtonWindowed;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		TObjectPtr<USlider> SliderMouseSensitivity;
+	TObjectPtr<USlider> SliderMouseSensitivity;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		TObjectPtr<UTextBlock> TextMouseSensitivity;
+	TObjectPtr<UTextBlock> TextMouseSensitivity;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		TObjectPtr<USlider> SliderBrightness;
+	TObjectPtr<USlider> SliderBrightness;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		TObjectPtr<UTextBlock> TextBrightness;
+	TObjectPtr<UTextBlock> TextBrightness;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		TObjectPtr<UButton> ButtonExit;
+	TObjectPtr<UButton> ButtonExit;
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<UButton> ButtonReset;
