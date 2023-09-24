@@ -17,7 +17,10 @@ void UPSUserSettingsWidget::NativeConstruct()
 void UPSUserSettingsWidget::InitComponents()
 {
 	UPSGameUserSettings* UserSettings = Cast<UPSGameUserSettings>(GEngine->GetGameUserSettings());
+	UE_LOG(LogTemp, Warning, TEXT("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest"));
+	if(UserSettings==nullptr){ UE_LOG(LogTemp, Display, TEXT("sibal"));}
 	if (UserSettings) {
+		UE_LOG(LogTemp, Warning, TEXT("asdfasdfasdfasdf"));
 		FIntPoint Resolution = UserSettings->GetScreenResolution();
 		EditWidth->SetText(FText::AsNumber(Resolution.X));
 		EditHeight->SetText(FText::AsNumber(Resolution.Y));
@@ -165,6 +168,7 @@ void UPSUserSettingsWidget::OnBrightnessChanged(float Value)
 void UPSUserSettingsWidget::OnExitClicked()
 {
 	RemoveFromParent();
+	UE_LOG(LogTemp, Display, TEXT("exitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexitexit"));
 }
 
 void UPSUserSettingsWidget::OnResetClicked()

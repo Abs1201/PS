@@ -197,6 +197,8 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void FinishDeath();
 
+	void Interact();
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -506,6 +508,9 @@ private:
 	/** true when Character dies */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	bool bDead;
+
+	UPROPERTY(EditAnywhere)
+	float InteractLineTraceLength = 500.f;
 
 public:
 	/** Returns CameraBoom subobject */
