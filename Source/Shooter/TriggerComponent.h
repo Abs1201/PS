@@ -29,11 +29,13 @@ private:
 	UPROPERTY(EditAnywhere)
 	FName AcceptableActorTag;
 
-	class UMover* Mover;
+	//class UMover* Mover;
+	bool bHasActor;
 
 	AActor* GetAcceptableActor() const;
 	
 public:
-	UFUNCTION(BlueprintCallable)
-	void SetMover(UMover* NewMover);
+	FORCEINLINE bool GetHasActor() const{ return bHasActor; }
+	// UFUNCTION(BlueprintCallable)
+	// void SetMover(UMover* NewMover);
 };

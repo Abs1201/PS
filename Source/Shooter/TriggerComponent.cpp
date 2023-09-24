@@ -18,20 +18,21 @@ void UTriggerComponent::BeginPlay()
 void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    if(Mover==nullptr){
-        UE_LOG(LogTemp, Warning, TEXT("no mover interlocked"));
-        return;
-    }
+    // if(Mover==nullptr){
+    //     UE_LOG(LogTemp, Warning, TEXT("no mover interlocked"));
+    //     return;
+    // }
     AActor* Actor =GetAcceptableActor();
     if(Actor){
-        UPrimitiveComponent* Component = Cast<UPrimitiveComponent>(Actor->GetRootComponent());
-        if(Component != nullptr){
-            Component->SetSimulatePhysics(false);
-        }
-        Mover->SetShouldMove(true);
+        // UPrimitiveComponent* Component = Cast<UPrimitiveComponent>(Actor->GetRootComponent());
+        // if(Component != nullptr){
+        //     Component->SetSimulatePhysics(false);
+        // }
+        // Mover->SetShouldMove(true);
+        bHasActor = true;
     }
     else{
-        Mover->SetShouldMove(false);
+        bHasActor = false;
     }
 
 }
@@ -42,6 +43,8 @@ AActor* UTriggerComponent::GetAcceptableActor() const
     GetOverlappingActors(Actors);
 
     for(AActor* Actor: Actors){
+        FString s = Actor->GetActorNameOrLabel();
+        UE_LOG(LogTemp, Display, TEXT("s: %s"), *s);
         bool HasAcceptableTag = Actor->ActorHasTag(AcceptableActorTag);
         if(HasAcceptableTag){
             return Actor;
@@ -50,8 +53,8 @@ AActor* UTriggerComponent::GetAcceptableActor() const
     return nullptr;
 }
 
-void UTriggerComponent::SetMover(UMover* NewMover)
-{
-    Mover = NewMover;
-}
+// void UTriggerComponent::SetMover(UMover* NewMover)
+// {
+//     Mover = NewMover;
+// }
 

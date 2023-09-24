@@ -23,6 +23,7 @@
 #include "Enemy.h"
 #include "EnemyController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Private/MapElement/Door.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter() :
@@ -670,6 +671,8 @@ void AShooterCharacter::SelectButtonPressed()
 		TraceHitItem->StartItemCurve(this, true);
 		TraceHitItem = nullptr;
 	}
+	FHitResult HitResult;
+
 }
 
 void AShooterCharacter::SelectButtonReleased()
@@ -1217,6 +1220,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("5Key", IE_Pressed, this,
 		&AShooterCharacter::FiveKeyPressed);
 
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AShooterCharacter::Interact);
+
 }
 
 void AShooterCharacter::FinishReloading()
@@ -1375,4 +1380,17 @@ void AShooterCharacter::StartEquipSoundTimer()
 		this,
 		&AShooterCharacter::ResetEquipSoundTimer,
 		EquipSoundResetTime);
+}
+
+
+void AShooterCharacter::Interact(){
+	if(FollowCamera == nullptr){ return; }
+	FHitResult HitResult;
+	FVector Start = FollowCamera->GetComponentLocation();
+	FVector End = Start + FollowCamera->GetForwardVector() * InteractLineTraceLength;
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
+	ADoor* Door = Cast<ADoor>(HitResult.GetActor());
+	if(Door){
+		Door->OnInteract();
+	}
 }
