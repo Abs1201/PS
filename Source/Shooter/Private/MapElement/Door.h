@@ -24,15 +24,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void OnInteract(class AActor* Actor);
 
 
 	bool CheckKeys(AActor* Actor);
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Mesh")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* Door;
-	UPROPERTY(VisibleAnywhere, Category = "Mesh")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* Box;
 	
 
@@ -43,19 +42,17 @@ private:
 	UPROPERTY(EditAnywhere, Category="Interact")
 	TArray<FName> Keys;
 
-
-protected:
-	FTimeline Timeline;
-	
-	UPROPERTY(EditAnywhere)
-	UCurveFloat* CurveFloat;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Door", meta = (AllowPrivateAccess = "true"))
 	bool bIsDoorClosed = true;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Door", meta = (AllowPrivateAccess = "true"))
 	float DoorMoveOffset = 200.f;
 
-	UFUNCTION()
-	void OpenDoor(float Value);
+public:
+	FORCEINLINE bool GetIsDoorClosed(){ return bIsDoorClosed; }
+	FORCEINLINE void SetIsDoorClosed(bool DoorClosed){ bIsDoorClosed = DoorClosed; }
+	FORCEINLINE float GetDoorMoveOffset(){ return DoorMoveOffset; }
+	FORCEINLINE void SetDoorMoveOffset(float Offset){ DoorMoveOffset=Offset; }
+	
 
 };
