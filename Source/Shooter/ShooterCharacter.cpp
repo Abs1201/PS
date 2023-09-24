@@ -490,6 +490,8 @@ void AShooterCharacter::AutoFireReset()
 	}
 }
 
+
+
 bool AShooterCharacter::TraceUnderCrosshairs(
 	FHitResult& OutHitResult,
 	FVector& OutHitLocation)
@@ -1389,8 +1391,8 @@ void AShooterCharacter::Interact(){
 	FVector Start = FollowCamera->GetComponentLocation();
 	FVector End = Start + FollowCamera->GetForwardVector() * InteractLineTraceLength;
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
-	ADoor* Door = Cast<ADoor>(HitResult.GetActor());
-	if(Door){
-		Door->OnInteract();
-	}
+	// ADoor* Door = Cast<ADoor>(HitResult.GetActor());
+	// if(Door){
+	// 	Door->OnInteract(this);
+	// }
 }

@@ -4,6 +4,7 @@
 #include "MapElement/Door.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TimelineComponent.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 ADoor::ADoor()
@@ -35,21 +36,38 @@ void ADoor::Tick(float DeltaTime)
 	Timeline.TickTimeline(DeltaTime);
 }
 
-void ADoor::OnInteract(){
+void ADoor::OnInteract(AActor* Actor){
 	UE_LOG(LogTemp, Display, TEXT("interacted with door"));
+	if(CheckKeys(Actor)){
+		if(bIsDoorClosed){
+			UE_LOG(LogTemp, Warning, TEXT("it was closed"));
+			Timeline.Play();
+		}
+		else{
+			UE_LOG(LogTemp, Warning, TEXT("it was opened"));
+			Timeline.Reverse();
+		}
+		bIsDoorClosed = !bIsDoorClosed;
+	}
 
-	if(bIsDoorClosed){
-		Timeline.Play();
-	}
-	else{
-		Timeline.Reverse();
-	}
+
 
 
 }
 
+bool ADoor::CheckKeys(AActor* Actor)
+{
+	bool HasKey = true;
+	for(auto& k: Keys){
+		bool Check = Actor->ActorHasTag(k);
+		HasKey&=Check;
+	}
+	return HasKey;
+}
+
 void ADoor::OpenDoor(float Value)
 {
+	FVector OriginalLocation = this->GetActorLocation();
 	FVector NewLocation = FVector(0, DoorMoveOffset*Value, 0);
 	Door->SetRelativeLocation(NewLocation);
 }

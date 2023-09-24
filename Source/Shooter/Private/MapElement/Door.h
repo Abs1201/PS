@@ -24,22 +24,24 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void OnInteract();
+	void OnInteract(class AActor* Actor);
 
-	UFUNCTION()
-	void OpenDoor(float Value);
+
+	bool CheckKeys(AActor* Actor);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	class UStaticMeshComponent* Door;
+	UPROPERTY(VisibleAnywhere, Category = "Mesh")
+	class UBoxComponent* Box;
+	
 
-	/** Line trace collides with box to show HUD widgets */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class UBoxComponent* CollisionBox;
+	/** Popup widget for when the player looks at the Door */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact", meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* InteractWidget;
 
-	/** Popup widget for when the player looks at the item */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class UWidgetComponent* PickupWidget;
+	UPROPERTY(EditAnywhere, Category="Interact")
+	TArray<FName> Keys;
 
 
 protected:
@@ -51,6 +53,9 @@ protected:
 	bool bIsDoorClosed = true;
 
 	UPROPERTY(EditAnywhere)
-	float DoorMoveOffset = 400.f;
+	float DoorMoveOffset = 200.f;
+
+	UFUNCTION()
+	void OpenDoor(float Value);
 
 };
