@@ -34,8 +34,7 @@ bool ADoor::CheckKeys(AActor* Actor)
 {
 	bool HasKey = true;
 	for(auto& k: Keys){
-		bool Check = Actor->ActorHasTag(k);
-		HasKey&=Check;
+		if(!(Actor->ActorHasTag(k))){ return false; }
 	}
-	return HasKey;
+	return true;
 }
