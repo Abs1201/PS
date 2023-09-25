@@ -24,33 +24,35 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void OnInteract();
 
-	UFUNCTION()
-	void OpenDoor(float Value);
+
+	bool CheckKeys(AActor* Actor);
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Mesh")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* Door;
-
-	/** Line trace collides with box to show HUD widgets */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class UBoxComponent* CollisionBox;
-
-	/** Popup widget for when the player looks at the item */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class UWidgetComponent* PickupWidget;
-
-
-protected:
-	FTimeline Timeline;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* Box;
 	
-	UPROPERTY(EditAnywhere)
-	UCurveFloat* CurveFloat;
 
+	/** Popup widget for when the player looks at the Door */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact", meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* InteractWidget;
+
+	UPROPERTY(EditAnywhere, Category="Interact")
+	TArray<FName> Keys;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Door", meta = (AllowPrivateAccess = "true"))
 	bool bIsDoorClosed = true;
 
-	UPROPERTY(EditAnywhere)
-	float DoorMoveOffset = 400.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Door", meta = (AllowPrivateAccess = "true"))
+	float DoorMoveOffset = 200.f;
+
+public:
+	FORCEINLINE bool GetIsDoorClosed(){ return bIsDoorClosed; }
+	FORCEINLINE void SetIsDoorClosed(bool DoorClosed){ bIsDoorClosed = DoorClosed; }
+	FORCEINLINE float GetDoorMoveOffset(){ return DoorMoveOffset; }
+	FORCEINLINE void SetDoorMoveOffset(float Offset){ DoorMoveOffset=Offset; }
+	
 
 };
