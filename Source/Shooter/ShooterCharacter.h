@@ -170,6 +170,8 @@ protected:
 	void StopAiming();
 
 	void PickupAmmo(class AAmmo* Ammo);
+	void PickupETCItem(class AETCItem* ETCItem);
+	void PickupUseItem(class AUseItem* UseItem);
 
 	void InitializeInterpLocations();
 
@@ -464,6 +466,7 @@ private:
 	TArray<AItem*> Inventory;
 
 	const int32 INVENTORY_CAPACITY{ 6 };
+	int32 ETCINVENTORY_CAPACITY{ 10 };
 
 	/** Delegate for sending slot information to InventoryBar when equipping */
 	UPROPERTY(BlueprintAssignable, Category = Delegates, meta = (AllowPrivateAccess = "true"))
@@ -511,6 +514,12 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float InteractLineTraceLength = 500.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
+	TArray<AItem*> ETCInventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
+	TArray<AItem*> UseInventory;
 
 public:
 	/** Returns CameraBoom subobject */
