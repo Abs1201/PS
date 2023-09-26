@@ -15,7 +15,7 @@ enum class EItemRarity : uint8
 	EIR_Uncommon UMETA(DisplayName = "Uncommon"),
 	EIR_Rare UMETA(DisplayName = "Rare"),
 	EIR_Legendary UMETA(DisplayName = "Legendary"),
-
+	
 	EIR_MAX UMETA(DisplayName = "DefaultMAX")
 };
 
@@ -36,6 +36,7 @@ enum class EItemType : uint8
 {
 	EIT_Ammo UMETA(DisplayName = "Ammo"),
 	EIT_Weapon UMETA(DisplayName = "Weapon"),
+	EIT_Key UMETA(DisplayName = "Key"),
 
 	EIT_MAX UMETA(DisplayName = "DefaultMAX")
 };
