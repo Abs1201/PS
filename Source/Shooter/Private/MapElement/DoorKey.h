@@ -17,8 +17,14 @@ class ADoorKey : public AItem
 public:
 	ADoorKey();
 
+protected:
+	virtual void SetItemProperties(EItemState State) override;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ammo, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* DoorKeyMesh;
 	
+	virtual void EnableCustomDepth() override;
+	virtual void DisableCustomDepth() override;
+
 };
