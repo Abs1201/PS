@@ -259,8 +259,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* WeaponBlueprint;
 
-	UPROPERTY(EditAnywhere, Category = "Spawning")
-
 
 public:	
 	// Called every frame

@@ -27,7 +27,7 @@ void UPSStageSelectionWidget::OnExitClicked()
 
 void UPSStageSelectionWidget::OnStage1ButtonClicked()
 {
-    UGameplayStatics::OpenLevel(this, FName("Stage1"));
+    UGameplayStatics::OpenLevel(this, FName("TutorialStage"));
 }
 
 void UPSStageSelectionWidget::BindEvents()
