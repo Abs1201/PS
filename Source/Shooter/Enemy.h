@@ -247,13 +247,15 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode, meta = (AllowPrivateAccess = "true"))
 	float EnemyScore=50;
 
-	// int32 AmmoPackPercent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
+	int32 AmmoRate=20;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
+	int32 HealthRate=10;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
+	int32 WeaponRate=10;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* HealthBlueprint;
-
-	// int32 HealthPackPercent;
-
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* WeaponBlueprint;
 

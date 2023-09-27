@@ -188,18 +188,22 @@ void AEnemy::Die()
 		);
 		EnemyController->StopMovement();
 	}
-	AmmoPackPercent = FMath::RandRange(1, 100);
-	if (AmmoPackPercent <= 10)
+	int32 AmmoPackPercent = FMath::RandRange(1, 100);
+	if (AmmoPackPercent <= AmmoRate)
 	{
 		SpawnAmmo();
 	}
 
-	HealthPackPercent = FMath::RandRange(1, 100);
-	if (HealthPackPercent <= 20)
+	int32 HealthPackPercent = FMath::RandRange(1, 100);
+	if (HealthPackPercent <= HealthRate)
 	{
 		SpawnHealth();
 	}
-	SpawnWeapon();
+	int32 WeaponPercent = FMath::RandRange(1, 100);
+	if (WeaponPercent <= WeaponRate)
+	{
+		SpawnWeapon();
+	}
 }
 
 void AEnemy::SpawnAmmo()
