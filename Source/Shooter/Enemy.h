@@ -247,17 +247,17 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode, meta = (AllowPrivateAccess = "true"))
 	float EnemyScore=50;
 
-	int32 AmmoPackPercent;
+	// int32 AmmoPackPercent;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* HealthBlueprint;
 
-	int32 HealthPackPercent;
+	// int32 HealthPackPercent;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* WeaponBlueprint;
 
-
+	UPROPERTY(EditAnywhere, Category = "Spawning")
 
 
 public:	

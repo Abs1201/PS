@@ -187,12 +187,19 @@ void AEnemy::Die()
 			true
 		);
 		EnemyController->StopMovement();
-
-		
-
-		
-
 	}
+	AmmoPackPercent = FMath::RandRange(1, 100);
+	if (AmmoPackPercent <= 10)
+	{
+		SpawnAmmo();
+	}
+
+	HealthPackPercent = FMath::RandRange(1, 100);
+	if (HealthPackPercent <= 20)
+	{
+		SpawnHealth();
+	}
+	SpawnWeapon();
 }
 
 void AEnemy::SpawnAmmo()
@@ -259,6 +266,20 @@ void AEnemy::SpawnWeapon()
 	}
 }
 
+void AEnemy::SpawnItem(){
+	UWorld* World = GetWorld();
+	if(World){
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		FVector Location = GetActorLocation();
+		FRotator Rotation = GetActorRotation();
+
+
+		AWeapon* DropWeapon = NewObject<AItem>(this, WeaponBlueprint);
+	}
+}
 
 
 
@@ -603,21 +624,6 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	{
 		Health = 0.f;
 		Die();
-		
-		AmmoPackPercent = FMath::RandRange(1, 100);
-		if (AmmoPackPercent <= 10)
-		{
-			SpawnAmmo();
-		}
-
-		HealthPackPercent = FMath::RandRange(1, 100);
-		if (HealthPackPercent <= 20)
-		{
-			SpawnHealth();
-		}
-		SpawnWeapon();
-		
-		
 	}
 	else
 	{
