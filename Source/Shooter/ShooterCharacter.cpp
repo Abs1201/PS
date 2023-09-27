@@ -24,6 +24,9 @@
 #include "EnemyController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Private/MapElement/Door.h"
+#include "Private/Item/DoorKey.h"
+#include "Private/Item/ETCItem.h"
+#include "Private/Item/UseItem.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter() :
@@ -201,6 +204,9 @@ void AShooterCharacter::BeginPlay()
 	EquippedWeapon->DisableCustomDepth();
 	EquippedWeapon->DisableGlowMaterial();
 	EquippedWeapon->SetCharacter(this);
+
+	ETCInventory.Empty();
+	UseInventory.Empty();
 
 	InitializeAmmoMap();
 	GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
@@ -1343,6 +1349,36 @@ void AShooterCharacter::GetPickupItem(AItem* Item)
 	{
 		PickupAmmo(Ammo);
 	}
+
+	auto ETCItem = Cast<AETCItem>(Item);
+	if(ETCItem){
+		PickupETCItem(ETCItem);
+	}
+	auto UseItem = Cast<AUseItem>(Item);
+	if(UseItem){
+		PickupUseItem(UseItem);
+	}
+}
+
+void AShooterCharacter::PickupETCItem(AETCItem* ETCItem){
+	if(ETCInventory.Num() < ETCINVENTORY_CAPACITY){
+		ETCInventory.Add(ETCItem);
+		
+		auto DoorKey = Cast<ADoorKey>(ETCItem);
+		if(DoorKey){
+			this->Tags.Add(DoorKey->GetKeyTag());
+			// FString s = (DoorKey->GetKeyTag()).ToString();
+			// UE_LOG(LogTemp, Warning, TEXT("Tag: %s"), *s);
+			// UE_LOG(LogTemp, Warning, TEXT("TagNum: %d"), this->Tags.Num());
+		}
+		ETCItem->Destroy();
+	}
+	else{
+		UE_LOG(LogTemp, Warning, TEXT("no storage"));
+	}
+}
+void AShooterCharacter::PickupUseItem(AUseItem* UseItem){
+	
 }
 
 FInterpLocation AShooterCharacter::GetInterpLocation(int32 Index)
