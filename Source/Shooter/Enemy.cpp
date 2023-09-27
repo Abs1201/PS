@@ -17,6 +17,7 @@
 #include "Ammo.h"
 #include "ShooterGameModeBase.h"
 #include "Weapon.h"
+#include "Private/Item/DoorKey.h"
 
 // Sets default values
 AEnemy::AEnemy() :
@@ -188,28 +189,52 @@ void AEnemy::Die()
 		);
 		EnemyController->StopMovement();
 	}
+
+	// all we need is size of item's box collision, number of BE Rate Item. not to overlap after enemy's death.
+	// Drop sequence: low->high rate
+	// Key, weapon, health, ammo
+	float SpawnedItemBoxSize = 0;
+	if(bKeyDrop){
+		SpawnDoorKey();
+		if(DoorKeyBlueprint){
+			UBoxComponent* Box = DoorKeyBlueprint->GetCollisionBox();
+			if(Box){
+				SpawnedItemBoxSize += max(Box->GetScaledBoxExtent().X, Box->GetScaledBoxExtent().Y);
+			}
+		}
+		
+	}
 	int32 AmmoPackPercent = FMath::RandRange(1, 100);
 	if (AmmoPackPercent <= AmmoRate)
 	{
-		SpawnAmmo();
+		SpawnAmmo(SpawnedItemBoxSize);
+		if(AmmoBlueprint){
+			UBoxComponent* Box = AmmoBlueprint->GetCollisionBox();
+			if(Box){
+				SpawnedItemBoxSize += max(Box->GetScaledBoxExtent().X, Box->GetScaledBoxExtent().Y);
+			}
+		}
 	}
-
 	int32 HealthPackPercent = FMath::RandRange(1, 100);
 	if (HealthPackPercent <= HealthRate)
 	{
-		SpawnHealth();
+		SpawnHealth(SpawnedItemBoxSize);
+		if(HealthBlueprint){
+			UBoxComponent* Box = HealthBlueprint->GetCollisionBox();
+			if(Box){
+				SpawnedItemBoxSize += max(Box->GetScaledBoxExtent().X, Box->GetScaledBoxExtent().Y);
+			}
+		}
 	}
 	int32 WeaponPercent = FMath::RandRange(1, 100);
 	if (WeaponPercent <= WeaponRate)
 	{
-		SpawnWeapon();
+		SpawnWeapon(SpawnedItemBoxSize);
 	}
+	
 }
 
-void AEnemy::SpawnAmmo()
-{
-
-
+void AEnemy::SpawnAmmo(float SpawnedItemBoxSize=0){
 	UWorld* World = GetWorld();
 
 	if (World)
@@ -219,16 +244,14 @@ void AEnemy::SpawnAmmo()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		FVector Location = GetActorLocation();
+		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
 		AAmmo* SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBlueprint, Location, Rotation, SpawnParams);
 	}
 }
 
-void AEnemy::SpawnHealth()
-{
-
-
+void AEnemy::SpawnHealth(float SpawnedItemBoxSize=0){
 	UWorld* World = GetWorld();
 
 	if (World)
@@ -238,6 +261,7 @@ void AEnemy::SpawnHealth()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		FVector Location = GetActorLocation();
+		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
 		AActor* SpawneHealth = World->SpawnActor<AActor>(HealthBlueprint, Location, Rotation, SpawnParams);
@@ -245,10 +269,7 @@ void AEnemy::SpawnHealth()
 }
 
 
-void AEnemy::SpawnWeapon()
-{
-
-
+void AEnemy::SpawnWeapon(float SpawnedItemBoxSize=0){
 	UWorld* World = GetWorld();
 
 	if (World)
@@ -258,19 +279,18 @@ void AEnemy::SpawnWeapon()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		FVector Location = GetActorLocation();
+		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
-
 		AWeapon* DropWeapon = NewObject<AWeapon>(this, WeaponBlueprint);
-			
-
 
 		DropWeapon = World->SpawnActor<AWeapon>(WeaponBlueprint, Location, Rotation, SpawnParams);
 
 	}
 }
 
-void AEnemy::SpawnItem(){
+//substitution 4 spawnItem()
+void AEnemy::SpawnDoorKey(float SpawnedItemBoxSize=0){
 	UWorld* World = GetWorld();
 	if(World){
 		FActorSpawnParameters SpawnParams;
@@ -278,20 +298,27 @@ void AEnemy::SpawnItem(){
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		FVector Location = GetActorLocation();
+		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
-
-		AWeapon* DropWeapon = NewObject<AItem>(this, WeaponBlueprint);
+		ADoorKey* DoorKey = NewObject<ADoorKey>(this, DoorKeyBlueprint);
 	}
 }
 
+// use after make droprate array;
+// void AEnemy::SpawnItem(){
+// 	UWorld* World = GetWorld();
+// 	if(World){
+// 		FActorSpawnParameters SpawnParams;
+// 		SpawnParams.Owner = this;
+// 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
+// 		FVector Location = GetActorLocation();
+// 		FRotator Rotation = GetActorRotation();
 
-
-
-
-
-
+// 		AItem* DropItem = NewObject<AItem>(this, ItemBlueprint);
+// 	}
+// }
 
 
 

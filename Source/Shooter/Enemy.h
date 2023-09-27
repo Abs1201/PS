@@ -248,16 +248,22 @@ private:
 	float EnemyScore=50;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
-	int32 AmmoRate=20;
+	int32 AmmoRate=30;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
-	int32 HealthRate=10;
+	int32 HealthRate=15;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
 	int32 WeaponRate=10;
+	PROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
+	bool bKeyDrop = false;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* HealthBlueprint;
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* WeaponBlueprint;
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+		UClass* ItemBlueprint;
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+		UClass* DoorKeyBlueprint;
 
 
 public:	
@@ -281,9 +287,13 @@ public:
 	FORCEINLINE float GetEnemyScore() const {return EnemyScore; }
 
 
-	void SpawnAmmo();
+	void SpawnAmmo(float SpawnedItemBoxSize=0);
 
-	void SpawnHealth();
+	void SpawnHealth(float SpawnedItemBoxSize=0);
 
-	void SpawnWeapon();
+	void SpawnWeapon(float SpawnedItemBoxSize=0);
+	
+	void SpawnItem(float SpawnedItemBoxSize=0);
+	void SpawnDoorKey(float SpawnedItemBoxSize=0);
+
 };
