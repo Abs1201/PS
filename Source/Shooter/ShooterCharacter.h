@@ -170,8 +170,9 @@ protected:
 	void StopAiming();
 
 	void PickupAmmo(class AAmmo* Ammo);
-	void PickupETCItem(class AETCItem* ETCItem);
-	void PickupUseItem(class AUseItem* UseItem);
+	void PickupDoorKey(class ADoorKey* DoorKey);
+	// void PickupETCItem(class AETCItem* ETCItem);
+	// void PickupUseItem(class AUseItem* UseItem);
 
 	void InitializeInterpLocations();
 
@@ -464,9 +465,20 @@ private:
 	/** An array of AItems for our Inventory */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	TArray<AItem*> Inventory;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	TArray<AItem*> DoorKeyInventory;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	TArray<AItem*> PotionInventory;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
+	// TArray<AItem*> ETCInventory;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
+	// TArray<AItem*> UseInventory;
+
 
 	const int32 INVENTORY_CAPACITY{ 6 };
-	int32 ETCINVENTORY_CAPACITY{ 10 };
+	const int32 DOORKEY_CAPACITY{ 4 }; // BossRoomKey, BoosKey, TutorialKey, etc // need use function...
+	const int32 POTION_CAPACITY{ 3 }; // power potion, health potion, etc
+	//int32 ETCINVENTORY_CAPACITY{ 10 };
 
 	/** Delegate for sending slot information to InventoryBar when equipping */
 	UPROPERTY(BlueprintAssignable, Category = Delegates, meta = (AllowPrivateAccess = "true"))
@@ -515,11 +527,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	float InteractLineTraceLength = 500.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
-	TArray<AItem*> ETCInventory;
+	
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
-	TArray<AItem*> UseInventory;
 
 public:
 	/** Returns CameraBoom subobject */

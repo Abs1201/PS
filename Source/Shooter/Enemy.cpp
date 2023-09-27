@@ -196,35 +196,26 @@ void AEnemy::Die()
 	float SpawnedItemBoxSize = 0;
 	if(bKeyDrop){
 		SpawnDoorKey();
-		if(DoorKeyBlueprint){
-			UBoxComponent* Box = DoorKeyBlueprint->GetCollisionBox();
-			if(Box){
-				SpawnedItemBoxSize += max(Box->GetScaledBoxExtent().X, Box->GetScaledBoxExtent().Y);
-			}
+		if(SpawnedDoorKey){
+			SpawnedItemBoxSize += (SpawnedDoorKey->GetCollisionBox()->GetScaledBoxExtent().X + 10);
 		}
-		
 	}
 	int32 AmmoPackPercent = FMath::RandRange(1, 100);
 	if (AmmoPackPercent <= AmmoRate)
 	{
 		SpawnAmmo(SpawnedItemBoxSize);
 		if(AmmoBlueprint){
-			UBoxComponent* Box = AmmoBlueprint->GetCollisionBox();
-			if(Box){
-				SpawnedItemBoxSize += max(Box->GetScaledBoxExtent().X, Box->GetScaledBoxExtent().Y);
-			}
+			SpawnedItemBoxSize += (SpawnedAmmo->GetCollisionBox()->GetScaledBoxExtent().X + 10);
 		}
 	}
 	int32 HealthPackPercent = FMath::RandRange(1, 100);
 	if (HealthPackPercent <= HealthRate)
 	{
 		SpawnHealth(SpawnedItemBoxSize);
-		if(HealthBlueprint){
-			UBoxComponent* Box = HealthBlueprint->GetCollisionBox();
-			if(Box){
-				SpawnedItemBoxSize += max(Box->GetScaledBoxExtent().X, Box->GetScaledBoxExtent().Y);
-			}
-		}
+		// if(HealthBlueprint){
+		// 	SpawnedItemBoxSize += (SpawnedHealth->GetCollisionBox()->GetScaledBoxExtent().X + 10);
+		// }
+		SpawnedItemBoxSize += 30;
 	}
 	int32 WeaponPercent = FMath::RandRange(1, 100);
 	if (WeaponPercent <= WeaponRate)
@@ -234,7 +225,7 @@ void AEnemy::Die()
 	
 }
 
-void AEnemy::SpawnAmmo(float SpawnedItemBoxSize=0){
+void AEnemy::SpawnAmmo(float SpawnedItemBoxSize){
 	UWorld* World = GetWorld();
 
 	if (World)
@@ -247,11 +238,11 @@ void AEnemy::SpawnAmmo(float SpawnedItemBoxSize=0){
 		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
-		AAmmo* SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBlueprint, Location, Rotation, SpawnParams);
+		SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBlueprint, Location, Rotation, SpawnParams);
 	}
 }
 
-void AEnemy::SpawnHealth(float SpawnedItemBoxSize=0){
+void AEnemy::SpawnHealth(float SpawnedItemBoxSize){
 	UWorld* World = GetWorld();
 
 	if (World)
@@ -264,12 +255,12 @@ void AEnemy::SpawnHealth(float SpawnedItemBoxSize=0){
 		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
-		AActor* SpawneHealth = World->SpawnActor<AActor>(HealthBlueprint, Location, Rotation, SpawnParams);
+		SpawnedHealth = World->SpawnActor<AActor>(HealthBlueprint, Location, Rotation, SpawnParams);
 	}
 }
 
 
-void AEnemy::SpawnWeapon(float SpawnedItemBoxSize=0){
+void AEnemy::SpawnWeapon(float SpawnedItemBoxSize){
 	UWorld* World = GetWorld();
 
 	if (World)
@@ -282,7 +273,7 @@ void AEnemy::SpawnWeapon(float SpawnedItemBoxSize=0){
 		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
-		AWeapon* DropWeapon = NewObject<AWeapon>(this, WeaponBlueprint);
+		DropWeapon = NewObject<AWeapon>(this, WeaponBlueprint);
 
 		DropWeapon = World->SpawnActor<AWeapon>(WeaponBlueprint, Location, Rotation, SpawnParams);
 
@@ -290,7 +281,7 @@ void AEnemy::SpawnWeapon(float SpawnedItemBoxSize=0){
 }
 
 //substitution 4 spawnItem()
-void AEnemy::SpawnDoorKey(float SpawnedItemBoxSize=0){
+void AEnemy::SpawnDoorKey(float SpawnedItemBoxSize){
 	UWorld* World = GetWorld();
 	if(World){
 		FActorSpawnParameters SpawnParams;
@@ -301,24 +292,10 @@ void AEnemy::SpawnDoorKey(float SpawnedItemBoxSize=0){
 		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
-		ADoorKey* DoorKey = NewObject<ADoorKey>(this, DoorKeyBlueprint);
+		SpawnedDoorKey = World->SpawnActor<ADoorKey>(DoorKeyBlueprint, Location, Rotation, SpawnParams);
 	}
 }
 
-// use after make droprate array;
-// void AEnemy::SpawnItem(){
-// 	UWorld* World = GetWorld();
-// 	if(World){
-// 		FActorSpawnParameters SpawnParams;
-// 		SpawnParams.Owner = this;
-// 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-// 		FVector Location = GetActorLocation();
-// 		FRotator Rotation = GetActorRotation();
-
-// 		AItem* DropItem = NewObject<AItem>(this, ItemBlueprint);
-// 	}
-// }
 
 
 

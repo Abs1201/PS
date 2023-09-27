@@ -25,8 +25,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Private/MapElement/Door.h"
 #include "Private/Item/DoorKey.h"
-#include "Private/Item/ETCItem.h"
-#include "Private/Item/UseItem.h"
+//#include "Private/Item/ETCItem.h"
+//#include "Private/Item/UseItem.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter() :
@@ -205,8 +205,9 @@ void AShooterCharacter::BeginPlay()
 	EquippedWeapon->DisableGlowMaterial();
 	EquippedWeapon->SetCharacter(this);
 
-	ETCInventory.Empty();
-	UseInventory.Empty();
+	//ETCInventory.Empty();
+	//UseInventory.Empty();
+	DoorKeyInventory.Empty();
 
 	InitializeAmmoMap();
 	GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
@@ -1349,37 +1350,32 @@ void AShooterCharacter::GetPickupItem(AItem* Item)
 	{
 		PickupAmmo(Ammo);
 	}
-
-	auto ETCItem = Cast<AETCItem>(Item);
-	if(ETCItem){
-		PickupETCItem(ETCItem);
-	}
-	auto UseItem = Cast<AUseItem>(Item);
-	if(UseItem){
-		PickupUseItem(UseItem);
+	
+	auto DoorKey = Cast<ADoorKey>(Item);
+	if(DoorKey){
+		PickupDoorKey(DoorKey);
 	}
 }
 
-void AShooterCharacter::PickupETCItem(AETCItem* ETCItem){
-	if(ETCInventory.Num() < ETCINVENTORY_CAPACITY){
-		ETCInventory.Add(ETCItem);
-		
-		auto DoorKey = Cast<ADoorKey>(ETCItem);
-		if(DoorKey){
-			this->Tags.Add(DoorKey->GetKeyTag());
-			// FString s = (DoorKey->GetKeyTag()).ToString();
-			// UE_LOG(LogTemp, Warning, TEXT("Tag: %s"), *s);
-			// UE_LOG(LogTemp, Warning, TEXT("TagNum: %d"), this->Tags.Num());
+void AShooterCharacter::PickupDoorKey(ADoorKey* DoorKey){
+	if(DoorKey==nullptr) {return;}
+	if(DoorKeyInventory.Num() < DOORKEY_CAPACITY){
+		if(this->ActorHasTag(DoorKey->GetKeyTag())){
+			UE_LOG(LogTemp, Warning, TEXT("SAME KEY"));
 		}
-		ETCItem->Destroy();
+		else{
+			this->Tags.Add(DoorKey->GetKeyTag());
+			DoorKeyInventory.Add(DoorKey);
+		}
+
+		DoorKey->Destroy();
 	}
 	else{
-		UE_LOG(LogTemp, Warning, TEXT("no storage"));
+		UE_LOG(LogTemp, Warning, TEXT("DOORKEY CAPACITY ERROR"));
 	}
 }
-void AShooterCharacter::PickupUseItem(AUseItem* UseItem){
-	
-}
+
+
 
 FInterpLocation AShooterCharacter::GetInterpLocation(int32 Index)
 {

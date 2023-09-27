@@ -253,18 +253,22 @@ private:
 	int32 HealthRate=15;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
 	int32 WeaponRate=10;
-	PROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
 	bool bKeyDrop = false;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* HealthBlueprint;
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* WeaponBlueprint;
-	UPROPERTY(EditAnywhere, Category = "Spawning")
-		UClass* ItemBlueprint;
+	// UPROPERTY(EditAnywhere, Category = "Spawning")
+	// 	UClass* ItemBlueprint;
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* DoorKeyBlueprint;
 
+	class AAmmo* SpawnedAmmo;
+	class AActor* SpawnedHealth;
+	class AWeapon* DropWeapon;
+	class ADoorKey* SpawnedDoorKey;
 
 public:	
 	// Called every frame
@@ -293,7 +297,6 @@ public:
 
 	void SpawnWeapon(float SpawnedItemBoxSize=0);
 	
-	void SpawnItem(float SpawnedItemBoxSize=0);
 	void SpawnDoorKey(float SpawnedItemBoxSize=0);
 
 };
