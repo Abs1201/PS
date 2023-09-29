@@ -186,8 +186,10 @@ protected:
 	void ExchangeInventoryItems(int32 CurrentItemIndex, int32 NewItemIndex);
 
 	int32 GetEmptyInventorySlot();
+	int32 GetEmptyKeyInventorySlot();
 
 	void HighlightInventorySlot();
+	void HighlightKeyInventorySlot();
 
 	UFUNCTION(BlueprintCallable)
 	EPhysicalSurface GetSurfaceType();

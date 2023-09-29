@@ -141,6 +141,8 @@ AShooterCharacter::AShooterCharacter() :
 
 	InterpComp6 = CreateDefaultSubobject<USceneComponent>(TEXT("Interpolation Component 6"));
 	InterpComp6->SetupAttachment(GetFollowCamera());
+
+	//DoorKeyInventory.SetNum(DOORKEY_CAPACITY);
 }
 
 float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -207,7 +209,7 @@ void AShooterCharacter::BeginPlay()
 
 	//ETCInventory.Empty();
 	//UseInventory.Empty();
-	DoorKeyInventory.Empty();
+	//DoorKeyInventory.Empty();
 
 	InitializeAmmoMap();
 	GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
@@ -553,6 +555,7 @@ void AShooterCharacter::TraceForItems()
 		{
 			TraceHitItem = Cast<AItem>(ItemTraceResult.GetActor());
 			const auto TraceHitWeapon = Cast<AWeapon>(TraceHitItem);
+			const auto TraceHitDoorKey = Cast<ADoorKey>(TraceHitItem);
 			if (TraceHitWeapon)
 			{
 				if (HighlightedSlot == -1)
@@ -561,6 +564,11 @@ void AShooterCharacter::TraceForItems()
 					HighlightInventorySlot();
 				}
 			}
+			// else if(TraceHitDoorKey){
+			// 	if(HighlightedSlot==-1){
+			// 		HighlightKeyInventorySlot();
+			// 	}
+			// }
 			else
 			{
 				// Is a slot being highlighted?
@@ -1092,17 +1100,42 @@ int32 AShooterCharacter::GetEmptyInventorySlot()
 	return -1; // Inventory is full!
 }
 
+int32 AShooterCharacter::GetEmptyKeyInventorySlot(){
+	// for(int32 i=0; i<DOORKEY_CAPACITY; i++){
+	// 	if(DoorKeyInventory[i]==nullptr){
+	// 		return i;
+	// 	}
+	// }
+	for (int32 i = 0; i < DoorKeyInventory.Num(); i++)
+	{
+		if (DoorKeyInventory[i] == nullptr)
+		{
+			return i;
+		}
+	}
+	if (DoorKeyInventory.Num() < INVENTORY_CAPACITY)
+	{
+		return DoorKeyInventory.Num();
+	}
+	return -1; // DoorKeyInventory is full!
+}
+
 void AShooterCharacter::HighlightInventorySlot()
 {
 	const int32 EmptySlot{ GetEmptyInventorySlot() };
 	HighlightIconDelegate.Broadcast(EmptySlot, true);
 	HighlightedSlot = EmptySlot;
 }
-
 void AShooterCharacter::UnHighlightInventorySlot()
 {
 	HighlightIconDelegate.Broadcast(HighlightedSlot, false);
 	HighlightedSlot = -1;
+}
+
+void AShooterCharacter::HighlightKeyInventorySlot(){
+	const int32 EmptySlot{ GetEmptyKeyInventorySlot() };
+	HighlightIconDelegate.Broadcast(EmptySlot, true);
+	HighlightedSlot = EmptySlot;
 }
 
 void AShooterCharacter::Stun()
@@ -1353,7 +1386,17 @@ void AShooterCharacter::GetPickupItem(AItem* Item)
 	
 	auto DoorKey = Cast<ADoorKey>(Item);
 	if(DoorKey){
-		PickupDoorKey(DoorKey);
+		// PickupDoorKey(DoorKey);
+		if (DoorKeyInventory.Num() < INVENTORY_CAPACITY)
+		{
+			DoorKey->SetSlotIndex(DoorKeyInventory.Num());
+			DoorKeyInventory.Add(DoorKey);
+			DoorKey->SetItemState(EItemState::EIS_PickedUp);
+		}
+		else // Inventory is full! 
+		{
+			UE_LOG(LogTemp, Warning, TEXT("DOORKEY CAPACITY ERROR"));
+		}
 	}
 }
 
