@@ -25,6 +25,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Private/MapElement/Door.h"
 #include "Private/Item/DoorKey.h"
+#include "PSGameUserSettings.h"
 //#include "Private/Item/ETCItem.h"
 //#include "Private/Item/UseItem.h"
 
@@ -266,7 +267,8 @@ void AShooterCharacter::Turn(float Value)
 	{
 		TurnScaleFactor = MouseHipTurnRate;
 	}
-	AddControllerYawInput(Value * TurnScaleFactor);
+	UPSGameUserSettings* UserSettings = Cast<UPSGameUserSettings>(GEngine->GetGameUserSettings());
+	AddControllerYawInput(Value * TurnScaleFactor * UserSettings->GetMouseSensitivity());
 }
 
 void AShooterCharacter::LookUp(float Value)
@@ -1387,19 +1389,9 @@ void AShooterCharacter::GetPickupItem(AItem* Item)
 	auto DoorKey = Cast<ADoorKey>(Item);
 	if(DoorKey){
 		// PickupDoorKey(DoorKey);
-		if (DoorKeyInventory.Num() < INVENTORY_CAPACITY)
-		{
-			DoorKey->SetSlotIndex(DoorKeyInventory.Num());
-			DoorKeyInventory.Add(DoorKey);
-			DoorKey->SetItemState(EItemState::EIS_PickedUp);
-		}
-		else // Inventory is full! 
-		{
-			UE_LOG(LogTemp, Warning, TEXT("DOORKEY CAPACITY ERROR"));
-		}
+		PickupDoorKey(DoorKey);
 	}
 }
-
 void AShooterCharacter::PickupDoorKey(ADoorKey* DoorKey){
 	if(DoorKey==nullptr) {return;}
 	if(DoorKeyInventory.Num() < DOORKEY_CAPACITY){
@@ -1407,16 +1399,33 @@ void AShooterCharacter::PickupDoorKey(ADoorKey* DoorKey){
 			UE_LOG(LogTemp, Warning, TEXT("SAME KEY"));
 		}
 		else{
-			this->Tags.Add(DoorKey->GetKeyTag());
+			DoorKey->SetSlotIndex(DoorKeyInventory.Num());
 			DoorKeyInventory.Add(DoorKey);
+			DoorKey->SetItemState(EItemState::EIS_PickedUp);
+			this->Tags.Add(DoorKey->GetKeyTag());
 		}
-
-		DoorKey->Destroy();
 	}
 	else{
 		UE_LOG(LogTemp, Warning, TEXT("DOORKEY CAPACITY ERROR"));
 	}
 }
+// void AShooterCharacter::PickupDoorKey(ADoorKey* DoorKey){
+// 	if(DoorKey==nullptr) {return;}
+// 	if(DoorKeyInventory.Num() < DOORKEY_CAPACITY){
+// 		if(this->ActorHasTag(DoorKey->GetKeyTag())){
+// 			UE_LOG(LogTemp, Warning, TEXT("SAME KEY"));
+// 		}
+// 		else{
+// 			this->Tags.Add(DoorKey->GetKeyTag());
+// 			DoorKeyInventory.Add(DoorKey);
+// 		}
+
+// 		DoorKey->Destroy();
+// 	}
+// 	else{
+// 		UE_LOG(LogTemp, Warning, TEXT("DOORKEY CAPACITY ERROR"));
+// 	}
+// }
 
 
 
@@ -1470,4 +1479,19 @@ void AShooterCharacter::Interact(){
 	// if(Door){
 	// 	Door->OnInteract(this);
 	// }
+}
+
+void AShooterCharacter::TickBrightness(){
+	float Brightness = 0.0;
+	UPSGameUserSettings* UserSettings = Cast<UPSGameUserSettings>(GEngine->GetGameUserSettings());
+	if (UserSettings) {
+		Brightness = UserSettings->GetAutoExposureBrightness();
+	}
+
+	if (FollowCamera) {
+		FPostProcessSettings Settings = FollowCamera->PostProcessSettings;
+		Settings.AutoExposureMinBrightness = Brightness;
+		Settings.AutoExposureMaxBrightness = Brightness;
+		FollowCamera->PostProcessSettings = Settings;
+	}
 }

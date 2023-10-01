@@ -12,13 +12,32 @@ void AShooterGameModeBase::BeginPlay()
     LoadRank();
 }
 
+AShooterGameModeBase::AShooterGameModeBase()
+{
+    PrimaryActorTick.bStartWithTickEnabled = true; 
+    PrimaryActorTick.bCanEverTick = true;
+}
+
+void AShooterGameModeBase::Tick(float DeltaTime)
+{   
+    Super::Tick(DeltaTime);
+    if(StateOfGame==EStateOfGame::Play){
+        PlayTime = FDateTime::Now() - StartTime;
+        float ElapsedTimeSeconds = PlayTime.GetTotalSeconds();
+        if(RequiredTime >= ElapsedTimeSeconds){
+            SetTimeScore(RequiredTime - ElapsedTimeSeconds);
+        }
+        SetScore(TimeScore + MonsterScore);
+    }
+
+}
+
 void AShooterGameModeBase::StartGame()
 {
     if(StateOfGame==EStateOfGame::Ready){
         SetStateOfGame(EStateOfGame::Play);
         SetStartTime(FDateTime::Now());
-        SetScore(0.f);
-        test();
+        SetScore(RequiredTime);
     }
 }
 
@@ -28,19 +47,15 @@ void AShooterGameModeBase::EndGame()
         SetStateOfGame(EStateOfGame::End);
         SetEndTime(FDateTime::Now());
         PlayTime = EndTime-StartTime;
-        int32 ElapsedSeconds = PlayTime.GetTotalSeconds();
-        if(ElapsedSeconds < 180){
-            AddScore(180-ElapsedSeconds);
-        }
         UpdateRank();
         SaveGame();
         OnEndGame.Broadcast();
     }
 }
 
-void AShooterGameModeBase::AddScore(float NewScore)
+void AShooterGameModeBase::AddMonsterScore(float NewMonsterScore)
 {
-    Score+=NewScore;
+    MonsterScore+=NewMonsterScore;
 }
 
 
@@ -99,21 +114,5 @@ void AShooterGameModeBase::ResetRank()
     Times.Empty();
 }
 
-void AShooterGameModeBase::test()
-{
-    int32 RankIndex=0;
-    for(auto e: Scores){
-        UE_LOG(LogTemp, Display, TEXT("Score: %f"), e);
-        if(e < Score){
-            break;
-        }
-        ++RankIndex;
-    }
-    UE_LOG(LogTemp, Display, TEXT("score_num: %d"), Scores.Num());
-    UE_LOG(LogTemp, Display, TEXT("Times_num: %d"), Times.Num());
-    Rank=RankIndex+1;
-    UE_LOG(LogTemp, Display, TEXT("Score: %f"), Score);
-    UE_LOG(LogTemp, Display, TEXT("Rank: %d"), Rank);
-}
 
 

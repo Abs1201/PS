@@ -29,7 +29,7 @@ AEnemy::AEnemy() :
 	HitReactTimeMax(3.f),
 	HitNumberDestroyTime(1.5f),
 	bStunned(false),
-	StunChance(0.5f),
+	StunChance(0.0125f),
 	AttackLFast(TEXT("AttackLFast")),
 	AttackRFast(TEXT("AttackRFast")),
 	AttackL(TEXT("AttackL")),
@@ -171,7 +171,7 @@ void AEnemy::Die()
 	bDying = true;
 
 	AShooterGameModeBase* GameMode = Cast<AShooterGameModeBase>(UGameplayStatics::GetGameMode(this));
-	GameMode->AddScore(EnemyScore);
+	GameMode->AddMonsterScore(EnemyScore);
 
 	HideHealthBar();
 

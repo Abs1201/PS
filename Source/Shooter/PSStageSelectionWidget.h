@@ -23,19 +23,27 @@ protected:
 	// UFUNCTION()
 	// void OnStageButtonClicked(int32 StageNum);
 	UFUNCTION()
+	void OnTutorialStageButtonClicked();
+	UFUNCTION()
 	void OnStage1ButtonClicked();
+
+
 	UFUNCTION()
 	void OnExitClicked();
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Stage)
+	int32 ClearedStage=-1;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<UButton> ButtonStageTutorial;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UButton> ButtonStage1;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UButton> ButtonStage2;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UButton> ButtonStage3;
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<UButton> ButtonStage4;
+
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UButton> ButtonExit;

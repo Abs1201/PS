@@ -204,6 +204,8 @@ protected:
 
 	void Interact();
 
+	virtual void TickBrightness();
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
