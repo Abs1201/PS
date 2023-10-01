@@ -33,8 +33,10 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Stage)
-	int32 ClearedStage=-1;
+	int32 ClearedStage=0;
 
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TArray<TObjectPtr<UButton>> StageButtons;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UButton> ButtonStageTutorial;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))

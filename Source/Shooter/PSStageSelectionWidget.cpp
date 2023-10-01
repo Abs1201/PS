@@ -4,6 +4,8 @@
 #include "PSStageSelectionWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "PSSaveGame.h"
+#include "Components/Button.h"
+#include "Components/Widget.h"
 
 void UPSStageSelectionWidget::NativeConstruct()
 {
@@ -15,6 +17,17 @@ void UPSStageSelectionWidget::NativeConstruct()
         this->ClearedStage = LoadGameInstance->ClearedStage;
     }
 
+    StageButtons.Add(ButtonStageTutorial);
+    StageButtons.Add(ButtonStage1);
+    StageButtons.Add(ButtonStage2);
+    StageButtons.Add(ButtonStage3);
+
+    for(auto& b: StageButtons){
+        b->SetIsEnabled(true);
+    }
+    for(int32 i=ClearedStage+1; i<StageButtons.Num(); i++){
+        StageButtons[i]->SetIsEnabled(false);
+    } 
 
     BindEvents();
 }
@@ -50,6 +63,7 @@ void UPSStageSelectionWidget::BindEvents()
 {
     //ButtonStage1->OnClicked.AddUniqueDynamic(this, &UPSStageSelectionWidget::OnStageButtonClicked);
     ButtonExit->OnClicked.AddUniqueDynamic(this, &UPSStageSelectionWidget::OnExitClicked);
+    
     ButtonStageTutorial->OnClicked.AddUniqueDynamic(this, &UPSStageSelectionWidget::OnTutorialStageButtonClicked);
     ButtonStage1->OnClicked.AddUniqueDynamic(this, &UPSStageSelectionWidget::OnStage1ButtonClicked);
     
