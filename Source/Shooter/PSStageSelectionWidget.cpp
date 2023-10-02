@@ -25,9 +25,9 @@ void UPSStageSelectionWidget::NativeConstruct()
     for(auto& b: StageButtons){
         b->SetIsEnabled(true);
     }
-    for(int32 i=ClearedStage+1; i<StageButtons.Num(); i++){
+    for(int32 i=ClearedStage+2; i<StageButtons.Num(); i++){
         StageButtons[i]->SetIsEnabled(false);
-    } 
+    }
 
     BindEvents();
 }

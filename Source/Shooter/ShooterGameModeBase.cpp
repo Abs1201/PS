@@ -87,6 +87,7 @@ void AShooterGameModeBase::SaveGame()
     if(SaveGameInstance){
         SaveGameInstance->Scores = this->Scores;
         SaveGameInstance->Times = this->Times;
+        SaveGameInstance->ClearedStage = this->StageNum;
 
         UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("Rank"), 0);
     }

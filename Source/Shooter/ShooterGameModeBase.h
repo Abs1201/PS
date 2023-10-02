@@ -70,7 +70,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	int32 Rank;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=GameMode)
 	float RequiredTime=180;
 
 
@@ -78,6 +78,9 @@ protected:
 	TArray<float> Scores;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	TArray<FDateTime> Times;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=GameMode)
+	int32 StageNum;
 	
 
 public:

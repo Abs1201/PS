@@ -73,6 +73,7 @@ AShooterCharacter::AShooterCharacter() :
 	// Combat variables
 	CombatState(ECombatState::ECS_Unoccupied),
 	bCrouching(false),
+	RunMovementSpeed(1200.f),
 	BaseMovementSpeed(650.f),
 	CrouchMovementSpeed(300.f),
 	StandingCapsuleHalfHeight(88.f),
@@ -90,7 +91,8 @@ AShooterCharacter::AShooterCharacter() :
 	Health(100.f),
 	MaxHealth(100.f),
 	StunChance(.25f),
-	bDead(false)
+	bDead(false),
+	bRunPressed(false)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -221,6 +223,7 @@ void AShooterCharacter::BeginPlay()
 
 void AShooterCharacter::MoveForward(float Value)
 {
+	MoveForwardValue = Value;
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is forward
@@ -234,6 +237,7 @@ void AShooterCharacter::MoveForward(float Value)
 
 void AShooterCharacter::MoveRight(float Value)
 {
+	MoveRightValue = Value;
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is right
@@ -346,17 +350,35 @@ bool AShooterCharacter::GetBeamEndLocation(
 
 void AShooterCharacter::AimingButtonPressed()
 {
-	bAimingButtonPressed = true;
-	if (CombatState != ECombatState::ECS_Reloading && CombatState != ECombatState::ECS_Equipping && CombatState != ECombatState::ECS_Stunned)
+	
+	if (!bRunPressed && CombatState != ECombatState::ECS_Reloading && CombatState != ECombatState::ECS_Equipping && CombatState != ECombatState::ECS_Stunned)
 	{
+		bAimingButtonPressed = true;
 		Aim();
 	}
 }
 
 void AShooterCharacter::AimingButtonReleased()
 {
-	bAimingButtonPressed = false;
-	StopAiming();
+	if(bAimingButtonPressed){
+		bAimingButtonPressed = false;
+		StopAiming();
+	}
+	
+}
+void AShooterCharacter::Aim()
+{
+	bAiming = true;
+	GetCharacterMovement()->MaxWalkSpeed = CrouchMovementSpeed;
+}
+
+void AShooterCharacter::StopAiming()
+{
+	bAiming = false;
+	if (!bCrouching)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
+	}
 }
 
 void AShooterCharacter::CameraInterpZoom(float DeltaTime)
@@ -459,8 +481,11 @@ void AShooterCharacter::CalculateCrosshairSpread(float DeltaTime)
 
 void AShooterCharacter::FireButtonPressed()
 {
-	bFireButtonPressed = true;
-	FireWeapon();
+	if(!bRunPressed){
+		bFireButtonPressed = true;
+		FireWeapon();
+	}
+	
 }
 
 void AShooterCharacter::FireButtonReleased()
@@ -954,20 +979,7 @@ void AShooterCharacter::InterpCapsuleHalfHeight(float DeltaTime)
 	GetCapsuleComponent()->SetCapsuleHalfHeight(InterpHalfHeight);
 }
 
-void AShooterCharacter::Aim()
-{
-	bAiming = true;
-	GetCharacterMovement()->MaxWalkSpeed = CrouchMovementSpeed;
-}
 
-void AShooterCharacter::StopAiming()
-{
-	bAiming = false;
-	if (!bCrouching)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
-	}
-}
 
 void AShooterCharacter::PickupAmmo(AAmmo* Ammo)
 {
@@ -1266,6 +1278,9 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AShooterCharacter::Interact);
 
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AShooterCharacter::RunPressed);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &AShooterCharacter::RunReleased);
+
 }
 
 void AShooterCharacter::FinishReloading()
@@ -1494,4 +1509,29 @@ void AShooterCharacter::TickBrightness(){
 		Settings.AutoExposureMaxBrightness = Brightness;
 		FollowCamera->PostProcessSettings = Settings;
 	}
+}
+
+void AShooterCharacter::RunPressed()
+{
+	if (MoveForwardValue > 0.f && MoveRightValue == 0.f && !bAiming && !bCrouching && CombatState != ECombatState::ECS_Reloading && CombatState != ECombatState::ECS_Equipping && CombatState != ECombatState::ECS_Stunned)
+	{
+		bRunPressed = true;
+		Run();
+	}
+}
+
+void AShooterCharacter::RunReleased()
+{
+	if(bRunPressed){
+		bRunPressed = false;
+		StopRun();
+	}
+	
+}
+
+void AShooterCharacter::Run(){
+	GetCharacterMovement()->MaxWalkSpeed = RunMovementSpeed;
+}
+void AShooterCharacter::StopRun(){
+	GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
 }

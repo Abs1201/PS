@@ -15,9 +15,20 @@ enum class ECombatState : uint8
 	ECS_Reloading UMETA(DisplayName = "Reloading"),
 	ECS_Equipping UMETA(DisplayName = "Equipping"),
 	ECS_Stunned UMETA(DisplayName = "Stunned"),
+	ECS_Running UMETA(DisplayName = "Running"),
 
 	ECS_NAX UMETA(DisplayName = "DefaultMAX")
 };
+
+UENUM(BlueprintType)
+enum class EStateOfCharacter : uint8{
+	Idle,
+	Aiming,
+	Reloading,
+	Swaping,
+	Running,
+};
+
 
 USTRUCT(BlueprintType)
 struct FInterpLocation
@@ -205,6 +216,12 @@ protected:
 	void Interact();
 
 	virtual void TickBrightness();
+
+	void RunPressed();
+	void RunReleased();
+
+	void Run();
+	void StopRun();
 
 public:
 	// Called every frame
@@ -394,6 +411,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	bool bCrouching;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float RunMovementSpeed;
+
 	/** Regular movement speed */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float BaseMovementSpeed;
@@ -420,6 +440,12 @@ private:
 	/** Ground friction while crouching */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float CrouchingGroundFriction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess="true"))
+	EStateOfCharacter StateOfCharacter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess="true"))
+	bool bRunPressed;
 
 	/** Used for knowing when the aiming button is pressed */
 	bool bAimingButtonPressed;
@@ -530,6 +556,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float InteractLineTraceLength = 500.f;
+
+	float MoveRightValue = 0;
+	float MoveForwardValue = 0;
 
 	
 
