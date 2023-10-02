@@ -17,6 +17,7 @@
 #include "Ammo.h"
 #include "ShooterGameModeBase.h"
 #include "Weapon.h"
+#include "Private/Item/DoorKey.h"
 
 // Sets default values
 AEnemy::AEnemy() :
@@ -28,7 +29,7 @@ AEnemy::AEnemy() :
 	HitReactTimeMax(3.f),
 	HitNumberDestroyTime(1.5f),
 	bStunned(false),
-	StunChance(0.5f),
+	StunChance(0.0125f),
 	AttackLFast(TEXT("AttackLFast")),
 	AttackRFast(TEXT("AttackRFast")),
 	AttackL(TEXT("AttackL")),
@@ -170,7 +171,7 @@ void AEnemy::Die()
 	bDying = true;
 
 	AShooterGameModeBase* GameMode = Cast<AShooterGameModeBase>(UGameplayStatics::GetGameMode(this));
-	GameMode->AddScore(EnemyScore);
+	GameMode->AddMonsterScore(EnemyScore);
 
 	HideHealthBar();
 
@@ -187,18 +188,44 @@ void AEnemy::Die()
 			true
 		);
 		EnemyController->StopMovement();
-
-		
-
-		
-
 	}
+
+	// all we need is size of item's box collision, number of BE Rate Item. not to overlap after enemy's death.
+	// Drop sequence: low->high rate
+	// Key, weapon, health, ammo
+	float SpawnedItemBoxSize = 0;
+	if(bKeyDrop){
+		SpawnDoorKey();
+		if(SpawnedDoorKey){
+			SpawnedItemBoxSize += (SpawnedDoorKey->GetCollisionBox()->GetScaledBoxExtent().X + 10);
+		}
+	}
+	int32 AmmoPackPercent = FMath::RandRange(1, 100);
+	if (AmmoPackPercent <= AmmoRate)
+	{
+		SpawnAmmo(SpawnedItemBoxSize);
+		if(AmmoBlueprint){
+			SpawnedItemBoxSize += (SpawnedAmmo->GetCollisionBox()->GetScaledBoxExtent().X + 10);
+		}
+	}
+	int32 HealthPackPercent = FMath::RandRange(1, 100);
+	if (HealthPackPercent <= HealthRate)
+	{
+		SpawnHealth(SpawnedItemBoxSize);
+		// if(HealthBlueprint){
+		// 	SpawnedItemBoxSize += (SpawnedHealth->GetCollisionBox()->GetScaledBoxExtent().X + 10);
+		// }
+		SpawnedItemBoxSize += 30;
+	}
+	int32 WeaponPercent = FMath::RandRange(1, 100);
+	if (WeaponPercent <= WeaponRate)
+	{
+		SpawnWeapon(SpawnedItemBoxSize);
+	}
+	
 }
 
-void AEnemy::SpawnAmmo()
-{
-
-
+void AEnemy::SpawnAmmo(float SpawnedItemBoxSize){
 	UWorld* World = GetWorld();
 
 	if (World)
@@ -208,16 +235,14 @@ void AEnemy::SpawnAmmo()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		FVector Location = GetActorLocation();
+		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
-		AAmmo* SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBlueprint, Location, Rotation, SpawnParams);
+		SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBlueprint, Location, Rotation, SpawnParams);
 	}
 }
 
-void AEnemy::SpawnHealth()
-{
-
-
+void AEnemy::SpawnHealth(float SpawnedItemBoxSize){
 	UWorld* World = GetWorld();
 
 	if (World)
@@ -227,17 +252,15 @@ void AEnemy::SpawnHealth()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		FVector Location = GetActorLocation();
+		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
-		AActor* SpawneHealth = World->SpawnActor<AActor>(HealthBlueprint, Location, Rotation, SpawnParams);
+		SpawnedHealth = World->SpawnActor<AActor>(HealthBlueprint, Location, Rotation, SpawnParams);
 	}
 }
 
 
-void AEnemy::SpawnWeapon()
-{
-
-
+void AEnemy::SpawnWeapon(float SpawnedItemBoxSize){
 	UWorld* World = GetWorld();
 
 	if (World)
@@ -247,25 +270,31 @@ void AEnemy::SpawnWeapon()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		FVector Location = GetActorLocation();
+		Location.X += SpawnedItemBoxSize;
 		FRotator Rotation = GetActorRotation();
 
-
-		AWeapon* DropWeapon = NewObject<AWeapon>(this, WeaponBlueprint);
-			
-
+		DropWeapon = NewObject<AWeapon>(this, WeaponBlueprint);
 
 		DropWeapon = World->SpawnActor<AWeapon>(WeaponBlueprint, Location, Rotation, SpawnParams);
 
 	}
 }
 
+//substitution 4 spawnItem()
+void AEnemy::SpawnDoorKey(float SpawnedItemBoxSize){
+	UWorld* World = GetWorld();
+	if(World){
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
+		FVector Location = GetActorLocation();
+		Location.X += SpawnedItemBoxSize;
+		FRotator Rotation = GetActorRotation();
 
-
-
-
-
-
+		SpawnedDoorKey = World->SpawnActor<ADoorKey>(DoorKeyBlueprint, Location, Rotation, SpawnParams);
+	}
+}
 
 
 
@@ -603,21 +632,6 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	{
 		Health = 0.f;
 		Die();
-		
-		AmmoPackPercent = FMath::RandRange(1, 100);
-		if (AmmoPackPercent <= 10)
-		{
-			SpawnAmmo();
-		}
-
-		HealthPackPercent = FMath::RandRange(1, 100);
-		if (HealthPackPercent <= 20)
-		{
-			SpawnHealth();
-		}
-		SpawnWeapon();
-		
-		
 	}
 	else
 	{

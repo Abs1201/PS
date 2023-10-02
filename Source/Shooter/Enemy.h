@@ -247,18 +247,28 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode, meta = (AllowPrivateAccess = "true"))
 	float EnemyScore=50;
 
-	int32 AmmoPackPercent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
+	int32 AmmoRate=30;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
+	int32 HealthRate=15;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
+	int32 WeaponRate=10;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop", meta = (AllowPrivateAccess = "true"))
+	bool bKeyDrop = false;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* HealthBlueprint;
-
-	int32 HealthPackPercent;
-
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 		UClass* WeaponBlueprint;
+	// UPROPERTY(EditAnywhere, Category = "Spawning")
+	// 	UClass* ItemBlueprint;
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+		UClass* DoorKeyBlueprint;
 
-
-
+	class AAmmo* SpawnedAmmo;
+	class AActor* SpawnedHealth;
+	class AWeapon* DropWeapon;
+	class ADoorKey* SpawnedDoorKey;
 
 public:	
 	// Called every frame
@@ -281,9 +291,12 @@ public:
 	FORCEINLINE float GetEnemyScore() const {return EnemyScore; }
 
 
-	void SpawnAmmo();
+	void SpawnAmmo(float SpawnedItemBoxSize=0);
 
-	void SpawnHealth();
+	void SpawnHealth(float SpawnedItemBoxSize=0);
 
-	void SpawnWeapon();
+	void SpawnWeapon(float SpawnedItemBoxSize=0);
+	
+	void SpawnDoorKey(float SpawnedItemBoxSize=0);
+
 };

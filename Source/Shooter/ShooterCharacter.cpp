@@ -25,8 +25,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Private/MapElement/Door.h"
 #include "Private/Item/DoorKey.h"
-#include "Private/Item/ETCItem.h"
-#include "Private/Item/UseItem.h"
+#include "PSGameUserSettings.h"
+//#include "Private/Item/ETCItem.h"
+//#include "Private/Item/UseItem.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter() :
@@ -72,6 +73,7 @@ AShooterCharacter::AShooterCharacter() :
 	// Combat variables
 	CombatState(ECombatState::ECS_Unoccupied),
 	bCrouching(false),
+	RunMovementSpeed(1200.f),
 	BaseMovementSpeed(650.f),
 	CrouchMovementSpeed(300.f),
 	StandingCapsuleHalfHeight(88.f),
@@ -89,7 +91,8 @@ AShooterCharacter::AShooterCharacter() :
 	Health(100.f),
 	MaxHealth(100.f),
 	StunChance(.25f),
-	bDead(false)
+	bDead(false),
+	bRunPressed(false)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -141,6 +144,8 @@ AShooterCharacter::AShooterCharacter() :
 
 	InterpComp6 = CreateDefaultSubobject<USceneComponent>(TEXT("Interpolation Component 6"));
 	InterpComp6->SetupAttachment(GetFollowCamera());
+
+	//DoorKeyInventory.SetNum(DOORKEY_CAPACITY);
 }
 
 float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -205,8 +210,9 @@ void AShooterCharacter::BeginPlay()
 	EquippedWeapon->DisableGlowMaterial();
 	EquippedWeapon->SetCharacter(this);
 
-	ETCInventory.Empty();
-	UseInventory.Empty();
+	//ETCInventory.Empty();
+	//UseInventory.Empty();
+	//DoorKeyInventory.Empty();
 
 	InitializeAmmoMap();
 	GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
@@ -217,6 +223,7 @@ void AShooterCharacter::BeginPlay()
 
 void AShooterCharacter::MoveForward(float Value)
 {
+	MoveForwardValue = Value;
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is forward
@@ -230,6 +237,7 @@ void AShooterCharacter::MoveForward(float Value)
 
 void AShooterCharacter::MoveRight(float Value)
 {
+	MoveRightValue = Value;
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is right
@@ -263,7 +271,8 @@ void AShooterCharacter::Turn(float Value)
 	{
 		TurnScaleFactor = MouseHipTurnRate;
 	}
-	AddControllerYawInput(Value * TurnScaleFactor);
+	UPSGameUserSettings* UserSettings = Cast<UPSGameUserSettings>(GEngine->GetGameUserSettings());
+	AddControllerYawInput(Value * TurnScaleFactor * UserSettings->GetMouseSensitivity());
 }
 
 void AShooterCharacter::LookUp(float Value)
@@ -341,17 +350,35 @@ bool AShooterCharacter::GetBeamEndLocation(
 
 void AShooterCharacter::AimingButtonPressed()
 {
-	bAimingButtonPressed = true;
-	if (CombatState != ECombatState::ECS_Reloading && CombatState != ECombatState::ECS_Equipping && CombatState != ECombatState::ECS_Stunned)
+	
+	if (!bRunPressed && CombatState != ECombatState::ECS_Reloading && CombatState != ECombatState::ECS_Equipping && CombatState != ECombatState::ECS_Stunned)
 	{
+		bAimingButtonPressed = true;
 		Aim();
 	}
 }
 
 void AShooterCharacter::AimingButtonReleased()
 {
-	bAimingButtonPressed = false;
-	StopAiming();
+	if(bAimingButtonPressed){
+		bAimingButtonPressed = false;
+		StopAiming();
+	}
+	
+}
+void AShooterCharacter::Aim()
+{
+	bAiming = true;
+	GetCharacterMovement()->MaxWalkSpeed = CrouchMovementSpeed;
+}
+
+void AShooterCharacter::StopAiming()
+{
+	bAiming = false;
+	if (!bCrouching)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
+	}
 }
 
 void AShooterCharacter::CameraInterpZoom(float DeltaTime)
@@ -454,8 +481,11 @@ void AShooterCharacter::CalculateCrosshairSpread(float DeltaTime)
 
 void AShooterCharacter::FireButtonPressed()
 {
-	bFireButtonPressed = true;
-	FireWeapon();
+	if(!bRunPressed){
+		bFireButtonPressed = true;
+		FireWeapon();
+	}
+	
 }
 
 void AShooterCharacter::FireButtonReleased()
@@ -552,6 +582,7 @@ void AShooterCharacter::TraceForItems()
 		{
 			TraceHitItem = Cast<AItem>(ItemTraceResult.GetActor());
 			const auto TraceHitWeapon = Cast<AWeapon>(TraceHitItem);
+			const auto TraceHitDoorKey = Cast<ADoorKey>(TraceHitItem);
 			if (TraceHitWeapon)
 			{
 				if (HighlightedSlot == -1)
@@ -560,6 +591,11 @@ void AShooterCharacter::TraceForItems()
 					HighlightInventorySlot();
 				}
 			}
+			// else if(TraceHitDoorKey){
+			// 	if(HighlightedSlot==-1){
+			// 		HighlightKeyInventorySlot();
+			// 	}
+			// }
 			else
 			{
 				// Is a slot being highlighted?
@@ -943,20 +979,7 @@ void AShooterCharacter::InterpCapsuleHalfHeight(float DeltaTime)
 	GetCapsuleComponent()->SetCapsuleHalfHeight(InterpHalfHeight);
 }
 
-void AShooterCharacter::Aim()
-{
-	bAiming = true;
-	GetCharacterMovement()->MaxWalkSpeed = CrouchMovementSpeed;
-}
 
-void AShooterCharacter::StopAiming()
-{
-	bAiming = false;
-	if (!bCrouching)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
-	}
-}
 
 void AShooterCharacter::PickupAmmo(AAmmo* Ammo)
 {
@@ -1091,17 +1114,42 @@ int32 AShooterCharacter::GetEmptyInventorySlot()
 	return -1; // Inventory is full!
 }
 
+int32 AShooterCharacter::GetEmptyKeyInventorySlot(){
+	// for(int32 i=0; i<DOORKEY_CAPACITY; i++){
+	// 	if(DoorKeyInventory[i]==nullptr){
+	// 		return i;
+	// 	}
+	// }
+	for (int32 i = 0; i < DoorKeyInventory.Num(); i++)
+	{
+		if (DoorKeyInventory[i] == nullptr)
+		{
+			return i;
+		}
+	}
+	if (DoorKeyInventory.Num() < INVENTORY_CAPACITY)
+	{
+		return DoorKeyInventory.Num();
+	}
+	return -1; // DoorKeyInventory is full!
+}
+
 void AShooterCharacter::HighlightInventorySlot()
 {
 	const int32 EmptySlot{ GetEmptyInventorySlot() };
 	HighlightIconDelegate.Broadcast(EmptySlot, true);
 	HighlightedSlot = EmptySlot;
 }
-
 void AShooterCharacter::UnHighlightInventorySlot()
 {
 	HighlightIconDelegate.Broadcast(HighlightedSlot, false);
 	HighlightedSlot = -1;
+}
+
+void AShooterCharacter::HighlightKeyInventorySlot(){
+	const int32 EmptySlot{ GetEmptyKeyInventorySlot() };
+	HighlightIconDelegate.Broadcast(EmptySlot, true);
+	HighlightedSlot = EmptySlot;
 }
 
 void AShooterCharacter::Stun()
@@ -1230,6 +1278,9 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AShooterCharacter::Interact);
 
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AShooterCharacter::RunPressed);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &AShooterCharacter::RunReleased);
+
 }
 
 void AShooterCharacter::FinishReloading()
@@ -1349,37 +1400,49 @@ void AShooterCharacter::GetPickupItem(AItem* Item)
 	{
 		PickupAmmo(Ammo);
 	}
-
-	auto ETCItem = Cast<AETCItem>(Item);
-	if(ETCItem){
-		PickupETCItem(ETCItem);
-	}
-	auto UseItem = Cast<AUseItem>(Item);
-	if(UseItem){
-		PickupUseItem(UseItem);
+	
+	auto DoorKey = Cast<ADoorKey>(Item);
+	if(DoorKey){
+		// PickupDoorKey(DoorKey);
+		PickupDoorKey(DoorKey);
 	}
 }
-
-void AShooterCharacter::PickupETCItem(AETCItem* ETCItem){
-	if(ETCInventory.Num() < ETCINVENTORY_CAPACITY){
-		ETCInventory.Add(ETCItem);
-		
-		auto DoorKey = Cast<ADoorKey>(ETCItem);
-		if(DoorKey){
-			this->Tags.Add(DoorKey->GetKeyTag());
-			// FString s = (DoorKey->GetKeyTag()).ToString();
-			// UE_LOG(LogTemp, Warning, TEXT("Tag: %s"), *s);
-			// UE_LOG(LogTemp, Warning, TEXT("TagNum: %d"), this->Tags.Num());
+void AShooterCharacter::PickupDoorKey(ADoorKey* DoorKey){
+	if(DoorKey==nullptr) {return;}
+	if(DoorKeyInventory.Num() < DOORKEY_CAPACITY){
+		if(this->ActorHasTag(DoorKey->GetKeyTag())){
+			UE_LOG(LogTemp, Warning, TEXT("SAME KEY"));
 		}
-		ETCItem->Destroy();
+		else{
+			DoorKey->SetSlotIndex(DoorKeyInventory.Num());
+			DoorKeyInventory.Add(DoorKey);
+			DoorKey->SetItemState(EItemState::EIS_PickedUp);
+			this->Tags.Add(DoorKey->GetKeyTag());
+		}
 	}
 	else{
-		UE_LOG(LogTemp, Warning, TEXT("no storage"));
+		UE_LOG(LogTemp, Warning, TEXT("DOORKEY CAPACITY ERROR"));
 	}
 }
-void AShooterCharacter::PickupUseItem(AUseItem* UseItem){
-	
-}
+// void AShooterCharacter::PickupDoorKey(ADoorKey* DoorKey){
+// 	if(DoorKey==nullptr) {return;}
+// 	if(DoorKeyInventory.Num() < DOORKEY_CAPACITY){
+// 		if(this->ActorHasTag(DoorKey->GetKeyTag())){
+// 			UE_LOG(LogTemp, Warning, TEXT("SAME KEY"));
+// 		}
+// 		else{
+// 			this->Tags.Add(DoorKey->GetKeyTag());
+// 			DoorKeyInventory.Add(DoorKey);
+// 		}
+
+// 		DoorKey->Destroy();
+// 	}
+// 	else{
+// 		UE_LOG(LogTemp, Warning, TEXT("DOORKEY CAPACITY ERROR"));
+// 	}
+// }
+
+
 
 FInterpLocation AShooterCharacter::GetInterpLocation(int32 Index)
 {
@@ -1431,4 +1494,44 @@ void AShooterCharacter::Interact(){
 	// if(Door){
 	// 	Door->OnInteract(this);
 	// }
+}
+
+void AShooterCharacter::TickBrightness(){
+	float Brightness = 0.0;
+	UPSGameUserSettings* UserSettings = Cast<UPSGameUserSettings>(GEngine->GetGameUserSettings());
+	if (UserSettings) {
+		Brightness = UserSettings->GetAutoExposureBrightness();
+	}
+
+	if (FollowCamera) {
+		FPostProcessSettings Settings = FollowCamera->PostProcessSettings;
+		Settings.AutoExposureMinBrightness = Brightness;
+		Settings.AutoExposureMaxBrightness = Brightness;
+		FollowCamera->PostProcessSettings = Settings;
+	}
+}
+
+void AShooterCharacter::RunPressed()
+{
+	if (MoveForwardValue > 0.f && MoveRightValue == 0.f && !bAiming && !bCrouching && CombatState != ECombatState::ECS_Reloading && CombatState != ECombatState::ECS_Equipping && CombatState != ECombatState::ECS_Stunned)
+	{
+		bRunPressed = true;
+		Run();
+	}
+}
+
+void AShooterCharacter::RunReleased()
+{
+	if(bRunPressed){
+		bRunPressed = false;
+		StopRun();
+	}
+	
+}
+
+void AShooterCharacter::Run(){
+	GetCharacterMovement()->MaxWalkSpeed = RunMovementSpeed;
+}
+void AShooterCharacter::StopRun(){
+	GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
 }

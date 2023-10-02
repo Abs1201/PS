@@ -296,6 +296,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Rarity, meta = (AllowPrivateAccess = "true"))
 	UTexture2D* IconBackground;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Test, meta = (AllowPrivateAccess = "true"))
+	UTexture2D* TestBackground;
 
 
 

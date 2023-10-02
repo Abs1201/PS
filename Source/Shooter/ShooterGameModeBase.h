@@ -26,12 +26,16 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	AShooterGameModeBase();
+
+	virtual void Tick(float DeltaTime) override;
+
 	UFUNCTION(BlueprintCallable)
 	void StartGame();
 	UFUNCTION(BlueprintCallable)
 	void EndGame();
 	UFUNCTION(BlueprintCallable)
-	void AddScore(float NewScore);
+	void AddMonsterScore(float NewMonsterScore);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateRank();
@@ -42,8 +46,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ResetRank();
-
-	void test();
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FShooterGameModeBaseOnEndGame OnEndGame;
@@ -58,17 +60,27 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	FDateTime EndTime; // Time
 
+	float TimeScore=0;
+	float MonsterScore=0;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
-	float Score;
+	float Score=0;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	FTimespan PlayTime;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	int32 Rank;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=GameMode)
+	float RequiredTime=180;
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	TArray<float> Scores;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	TArray<FDateTime> Times;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=GameMode)
+	int32 StageNum;
 	
 
 public:
@@ -78,14 +90,22 @@ public:
 	FORCEINLINE void SetEndTime(FDateTime Time){EndTime=Time;}
 	FORCEINLINE EStateOfGame GetStateOfGame(){return StateOfGame;} 
 	FORCEINLINE void SetStateOfGame(EStateOfGame NewState){StateOfGame=NewState;}
+
+	FORCEINLINE float GetTimeScore(){ return TimeScore; }
+	FORCEINLINE void SetTimeScore(float NewTimeScore){ TimeScore=NewTimeScore; }
+	FORCEINLINE float GetMonsterScore(){ return MonsterScore; }
+	FORCEINLINE void SetMonsterScore(float NewMonsterScore){ MonsterScore = NewMonsterScore; }
+
 	FORCEINLINE float GetScore(){return Score;}
 	FORCEINLINE void SetScore(float NewScore){Score=NewScore;}
-	FORCEINLINE FTimespan GetPlayTime(){ return PlayTime;}
+	FORCEINLINE FTimespan GetPlayTime(){return PlayTime;}
+	FORCEINLINE void SetPlayTime(FTimespan NewPlayTime){PlayTime=NewPlayTime;}
 	FORCEINLINE int32 GetRank(){return Rank;}
 	FORCEINLINE void SetRank(int32 NewRank){Rank=NewRank;}
 	FORCEINLINE TArray<float> GetScores(){ return Scores; }
 	//FORCEINLINE TArray<FTimespan> GetPlayTimes(){ return PlayTimes;}
 	// FORCEINLINE TArray<int32> GetRanks(){ return Ranks; }
 	FORCEINLINE TArray<FDateTime> GetTimes(){ return Times; }
+	
 	
 };

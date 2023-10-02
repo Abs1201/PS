@@ -15,9 +15,20 @@ enum class ECombatState : uint8
 	ECS_Reloading UMETA(DisplayName = "Reloading"),
 	ECS_Equipping UMETA(DisplayName = "Equipping"),
 	ECS_Stunned UMETA(DisplayName = "Stunned"),
+	ECS_Running UMETA(DisplayName = "Running"),
 
 	ECS_NAX UMETA(DisplayName = "DefaultMAX")
 };
+
+UENUM(BlueprintType)
+enum class EStateOfCharacter : uint8{
+	Idle,
+	Aiming,
+	Reloading,
+	Swaping,
+	Running,
+};
+
 
 USTRUCT(BlueprintType)
 struct FInterpLocation
@@ -170,8 +181,9 @@ protected:
 	void StopAiming();
 
 	void PickupAmmo(class AAmmo* Ammo);
-	void PickupETCItem(class AETCItem* ETCItem);
-	void PickupUseItem(class AUseItem* UseItem);
+	void PickupDoorKey(class ADoorKey* DoorKey);
+	// void PickupETCItem(class AETCItem* ETCItem);
+	// void PickupUseItem(class AUseItem* UseItem);
 
 	void InitializeInterpLocations();
 
@@ -185,8 +197,10 @@ protected:
 	void ExchangeInventoryItems(int32 CurrentItemIndex, int32 NewItemIndex);
 
 	int32 GetEmptyInventorySlot();
+	int32 GetEmptyKeyInventorySlot();
 
 	void HighlightInventorySlot();
+	void HighlightKeyInventorySlot();
 
 	UFUNCTION(BlueprintCallable)
 	EPhysicalSurface GetSurfaceType();
@@ -200,6 +214,14 @@ protected:
 	void FinishDeath();
 
 	void Interact();
+
+	virtual void TickBrightness();
+
+	void RunPressed();
+	void RunReleased();
+
+	void Run();
+	void StopRun();
 
 public:
 	// Called every frame
@@ -389,6 +411,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	bool bCrouching;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float RunMovementSpeed;
+
 	/** Regular movement speed */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float BaseMovementSpeed;
@@ -415,6 +440,12 @@ private:
 	/** Ground friction while crouching */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float CrouchingGroundFriction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess="true"))
+	EStateOfCharacter StateOfCharacter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess="true"))
+	bool bRunPressed;
 
 	/** Used for knowing when the aiming button is pressed */
 	bool bAimingButtonPressed;
@@ -464,9 +495,20 @@ private:
 	/** An array of AItems for our Inventory */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	TArray<AItem*> Inventory;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	TArray<AItem*> DoorKeyInventory;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	TArray<AItem*> PotionInventory;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
+	// TArray<AItem*> ETCInventory;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
+	// TArray<AItem*> UseInventory;
+
 
 	const int32 INVENTORY_CAPACITY{ 6 };
-	int32 ETCINVENTORY_CAPACITY{ 10 };
+	const int32 DOORKEY_CAPACITY{ 4 }; // BossRoomKey, BoosKey, TutorialKey, etc // need use function...
+	const int32 POTION_CAPACITY{ 3 }; // power potion, health potion, etc
+	//int32 ETCINVENTORY_CAPACITY{ 10 };
 
 	/** Delegate for sending slot information to InventoryBar when equipping */
 	UPROPERTY(BlueprintAssignable, Category = Delegates, meta = (AllowPrivateAccess = "true"))
@@ -515,11 +557,11 @@ private:
 	UPROPERTY(EditAnywhere)
 	float InteractLineTraceLength = 500.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
-	TArray<AItem*> ETCInventory;
+	float MoveRightValue = 0;
+	float MoveForwardValue = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
-	TArray<AItem*> UseInventory;
+	
+
 
 public:
 	/** Returns CameraBoom subobject */
