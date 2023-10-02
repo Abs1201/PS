@@ -5,6 +5,7 @@
 #include "PSGameUserSettings.h"
 #include "ShooterGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "PSSaveGame.h"
 
 void UPSUserSettingsWidget::NativeConstruct()
 {
@@ -170,10 +171,15 @@ void UPSUserSettingsWidget::OnExitClicked()
 
 void UPSUserSettingsWidget::OnResetClicked()
 {
-    AShooterGameModeBase* GameMode = Cast<AShooterGameModeBase>(UGameplayStatics::GetGameMode(this));
-	UE_LOG(LogTemp, Display, TEXT("thefuck"));
-    if(GameMode){
-		UE_LOG(LogTemp, Display, TEXT("what"));
-        GameMode->ResetRank();
+    // AShooterGameModeBase* GameMode = Cast<AShooterGameModeBase>(UGameplayStatics::GetGameMode(this));
+    // if(GameMode){
+    //     GameMode->ResetRank();
+    // }
+	UPSSaveGame* LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSSaveGame::StaticClass()));
+    LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("Rank"), 0));
+    if(LoadGameInstance){
+		LoadGameInstance->ResetData();
+		UGameplayStatics::SaveGameToSlot(LoadGameInstance, TEXT("Rank"), 0);
+
     }
 }

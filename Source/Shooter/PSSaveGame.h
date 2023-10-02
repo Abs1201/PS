@@ -24,6 +24,8 @@ public:
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	// TArray<int32> Ranks;
 	
+	void ResetData();
+	void ResetGame();
 	
 
 };

@@ -3,3 +3,15 @@
 
 #include "PSSaveGame.h"
 
+
+void UPSSaveGame::ResetData()
+{
+    Scores.Empty();
+    Times.Empty();
+}
+
+void UPSSaveGame::ResetGame()
+{
+    ResetData();
+    ClearedStage=0;
+}

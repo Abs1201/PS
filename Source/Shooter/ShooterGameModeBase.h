@@ -81,6 +81,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=GameMode)
 	int32 StageNum;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=GameMode)
+	int32 SaveSlotNum = 0;
 	
 
 public:
