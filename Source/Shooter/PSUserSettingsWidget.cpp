@@ -176,6 +176,7 @@ void UPSUserSettingsWidget::OnResetClicked()
     //     GameMode->ResetRank();
     // }
 	UPSSaveGame* LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSSaveGame::StaticClass()));
+	for()
     LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("Rank"), 0));
     if(LoadGameInstance){
 		LoadGameInstance->ResetData();

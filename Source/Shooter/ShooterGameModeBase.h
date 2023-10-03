@@ -109,6 +109,6 @@ public:
 	//FORCEINLINE TArray<FTimespan> GetPlayTimes(){ return PlayTimes;}
 	// FORCEINLINE TArray<int32> GetRanks(){ return Ranks; }
 	FORCEINLINE TArray<FDateTime> GetTimes(){ return Times; }
-	
+	FORCEINLINE int32 GetStageNum() const{ return StageNum; } 
 	
 };
