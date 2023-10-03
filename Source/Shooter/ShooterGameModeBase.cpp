@@ -9,7 +9,7 @@
 void AShooterGameModeBase::BeginPlay()
 {
     Super::BeginPlay();
-    LoadRank();
+    
 }
 
 AShooterGameModeBase::AShooterGameModeBase()
@@ -35,6 +35,7 @@ void AShooterGameModeBase::Tick(float DeltaTime)
 void AShooterGameModeBase::StartGame()
 {
     if(StateOfGame==EStateOfGame::Ready){
+        LoadRank();
         SetStateOfGame(EStateOfGame::Play);
         SetStartTime(FDateTime::Now());
         SetScore(RequiredTime);
@@ -89,21 +90,31 @@ void AShooterGameModeBase::SaveGame()
         SaveGameInstance->Times = this->Times;
         SaveGameInstance->ClearedStage = this->StageNum;
 
-        UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("Rank"), 0);
+        FString SlotName = "Rank" + FString::FromInt(SaveSlotNum);
+        UE_LOG(LogTemp, Display, TEXT("slotname: %s"), *SlotName);
+
+        UGameplayStatics::SaveGameToSlot(SaveGameInstance, SlotName, 0);
     }
 }
 
 void AShooterGameModeBase::LoadRank()
 {
     UPSSaveGame* LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSSaveGame::StaticClass()));
-    LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("Rank"), 0));
+
+    FString SlotName = "Rank" + FString::FromInt(SaveSlotNum);
+    UE_LOG(LogTemp, Display, TEXT("slotname: %s"), *SlotName);
+    LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
     if(LoadGameInstance){
+        UE_LOG(LogTemp, Warning, TEXT("loadrank succ"));
         this->Scores = LoadGameInstance->Scores;
         this->Times = LoadGameInstance->Times;
     }
-    
+    else{
+        UE_LOG(LogTemp, Warning, TEXT("loadrank failed"));
+    } 
 }
 
+//not used.. revised PSUserSettingsWidget create savegameinstance to use itself.
 void AShooterGameModeBase::ResetRank()
 {
     // UPSSaveGame* SaveGameInstance = Cast<UPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSSaveGame::StaticClass()));

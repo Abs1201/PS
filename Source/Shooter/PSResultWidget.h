@@ -23,6 +23,8 @@ protected:
 	TObjectPtr<class UTextBlock> TextScore;
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<UTextBlock> TextPlayTime;
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UTextBlock> TextStageNum;
 	// UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	// TObjectPtr<UTextBlock> TextTime;
 	
@@ -41,6 +43,8 @@ protected:
 	void InitRank();
 	UFUNCTION(BlueprintCallable)
 	void InitRankTable();
+	UFUNCTION(BlueprintCallable)
+	void InitStageNum();
 
 	
 };

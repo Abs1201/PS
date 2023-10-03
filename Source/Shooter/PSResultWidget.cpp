@@ -13,7 +13,8 @@
 void UPSResultWidget::NativeConstruct()
 {
     GameMode = Cast<AShooterGameModeBase>(UGameplayStatics::GetGameMode(this));
-
+    
+    InitStageNum();
     InitScore();
     InitPlayTime();
     InitRank();
@@ -28,8 +29,6 @@ void UPSResultWidget::InitScore()
         TextScore->SetText(FText::FromString(Text));
     }
 }
-
-
 
 void UPSResultWidget::InitPlayTime()
 {
@@ -70,6 +69,15 @@ void UPSResultWidget::InitRank()
         TextRank->SetText(FText::FromString(s));
     }
     
+}
+
+void UPSResultWidget::InitStageNum(){
+    if(GameMode){
+        int32 StageNum = GameMode->GetStageNum();
+        FString s = TEXT("Stage ") + FString::FromInt(StageNum);
+        TextStageNum->SetText(FText::FromString(s));
+
+    }
 }
 
 void UPSResultWidget::InitRankTable()
