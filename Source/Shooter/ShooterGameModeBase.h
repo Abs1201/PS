@@ -80,10 +80,10 @@ protected:
 	TArray<FDateTime> Times;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=GameMode)
-	int32 StageNum;
+	int32 StageNum=0;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=GameMode)
-	int32 SaveSlotNum = 0;
+	// UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=GameMode)
+	// int32 SaveSlotNum = 0;
 	
 
 public:

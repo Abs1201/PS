@@ -176,11 +176,18 @@ void UPSUserSettingsWidget::OnResetClicked()
     //     GameMode->ResetRank();
     // }
 	UPSSaveGame* LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSSaveGame::StaticClass()));
-	for()
-    LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("Rank"), 0));
-    if(LoadGameInstance){
-		LoadGameInstance->ResetData();
-		UGameplayStatics::SaveGameToSlot(LoadGameInstance, TEXT("Rank"), 0);
-
-    }
+	FString SlotName;
+	for(int32 i=0; i<4; i++){
+		SlotName = "Rank" + FString::FromInt(i);
+		LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+		if(LoadGameInstance){
+			UE_LOG(LogTemp, Warning, TEXT("@usersettingswidget::resetClicked"));
+			LoadGameInstance->ResetGame();
+			UGameplayStatics::SaveGameToSlot(LoadGameInstance, SlotName, 0);
+		}
+	}
+	LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("Rank"), 0));
+	LoadGameInstance->ResetGame();
+	UGameplayStatics::SaveGameToSlot(LoadGameInstance, TEXT("Rank"), 0);
+    
 }

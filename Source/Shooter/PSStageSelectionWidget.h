@@ -26,14 +26,17 @@ protected:
 	void OnTutorialStageButtonClicked();
 	UFUNCTION()
 	void OnStage1ButtonClicked();
-
+	UFUNCTION()
+	void OnStage2ButtonClicked();
+	UFUNCTION()
+	void OnStage3ButtonClicked();
 
 	UFUNCTION()
 	void OnExitClicked();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Stage)
-	int32 ClearedStage=0;
+	int32 ClearedStage=-1;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TArray<TObjectPtr<UButton>> StageButtons;

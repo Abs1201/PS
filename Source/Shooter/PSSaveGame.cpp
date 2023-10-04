@@ -13,5 +13,5 @@ void UPSSaveGame::ResetData()
 void UPSSaveGame::ResetGame()
 {
     ResetData();
-    ClearedStage=0;
+    ClearedStage=-1;
 }

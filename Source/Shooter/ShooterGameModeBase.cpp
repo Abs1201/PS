@@ -88,12 +88,12 @@ void AShooterGameModeBase::SaveGame()
     if(SaveGameInstance){
         SaveGameInstance->Scores = this->Scores;
         SaveGameInstance->Times = this->Times;
-        SaveGameInstance->ClearedStage = this->StageNum;
+        SaveGameInstance->ClearedStage = FMath::Max(SaveGameInstance->ClearedStage, this->StageNum);
 
-        FString SlotName = "Rank" + FString::FromInt(SaveSlotNum);
-        UE_LOG(LogTemp, Display, TEXT("slotname: %s"), *SlotName);
-
+        FString SlotName = "Rank" + FString::FromInt(StageNum);
         UGameplayStatics::SaveGameToSlot(SaveGameInstance, SlotName, 0);
+        UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("Rank"), 0);
+        
     }
 }
 
@@ -101,16 +101,14 @@ void AShooterGameModeBase::LoadRank()
 {
     UPSSaveGame* LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSSaveGame::StaticClass()));
 
-    FString SlotName = "Rank" + FString::FromInt(SaveSlotNum);
-    UE_LOG(LogTemp, Display, TEXT("slotname: %s"), *SlotName);
+    FString SlotName = "Rank" + FString::FromInt(StageNum);
     LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
     if(LoadGameInstance){
-        UE_LOG(LogTemp, Warning, TEXT("loadrank succ"));
         this->Scores = LoadGameInstance->Scores;
         this->Times = LoadGameInstance->Times;
     }
     else{
-        UE_LOG(LogTemp, Warning, TEXT("loadrank failed"));
+        //UE_LOG(LogTemp, Warning, TEXT("loadrank failed"));
     } 
 }
 
