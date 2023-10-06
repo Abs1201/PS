@@ -187,7 +187,10 @@ void UPSUserSettingsWidget::OnResetClicked()
 		}
 	}
 	LoadGameInstance = Cast<UPSSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("Rank"), 0));
-	LoadGameInstance->ResetGame();
-	UGameplayStatics::SaveGameToSlot(LoadGameInstance, TEXT("Rank"), 0);
+	if(LoadGameInstance){
+		LoadGameInstance->ResetGame();
+		UGameplayStatics::SaveGameToSlot(LoadGameInstance, TEXT("Rank"), 0);
+	}
+	
     
 }

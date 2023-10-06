@@ -73,8 +73,8 @@ AShooterCharacter::AShooterCharacter() :
 	// Combat variables
 	CombatState(ECombatState::ECS_Unoccupied),
 	bCrouching(false),
-	RunMovementSpeed(1200.f),
-	BaseMovementSpeed(650.f),
+	RunMovementSpeed(1000.f),
+	BaseMovementSpeed(450.f),
 	CrouchMovementSpeed(300.f),
 	StandingCapsuleHalfHeight(88.f),
 	CrouchingCapsuleHalfHeight(44.f),
