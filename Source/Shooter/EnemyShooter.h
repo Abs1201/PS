@@ -3,27 +3,31 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "Enemy.h"
 #include "EnemyShooter.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
-class SHOOTER_API AEnemyShooter : public ACharacter
+class SHOOTER_API AEnemyShooter : public AEnemy
 {
 	GENERATED_BODY()
-
-public:
-	// Sets default values for this character's properties
-	AEnemyShooter();
-
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+private:
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	TSubclassOf<class AEnemyShooterGun> EnemyShooterGunClass;
+
+	UPROPERTY()
+	AEnemyShooterGun* EnemyShooterGun;
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	void Shoot();
 };

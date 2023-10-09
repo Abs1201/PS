@@ -151,6 +151,7 @@ void AEnemy::BeginPlay()
 			TEXT("PatrolPoint2"),
 			WorldPatrolPoint2);
 
+		UE_LOG(LogTemp, Warning, TEXT("in enemy controller"));
 		EnemyController->RunBehaviorTree(BehaviorTree);
 	}
 }

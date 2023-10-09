@@ -167,7 +167,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Behavior Tree", meta = (AllowPrivateAccess = "true", MakeEditWidget = "true"))
 	FVector PatrolPoint2;
 
-	class AEnemyController* EnemyController;
 
 	/** Overlap sphere for when the enemy becomes hostile */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
@@ -231,6 +230,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* DeathMontage;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	bool bDying;
 
 	FTimerHandle DeathTimer;
@@ -270,6 +270,9 @@ private:
 	class AWeapon* DropWeapon;
 	class ADoorKey* SpawnedDoorKey;
 
+protected:
+	class AEnemyController* EnemyController;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -298,5 +301,7 @@ public:
 	void SpawnWeapon(float SpawnedItemBoxSize=0);
 	
 	void SpawnDoorKey(float SpawnedItemBoxSize=0);
+
+	AEnemyController* GetEnemyController(){ return EnemyController; };
 
 };
