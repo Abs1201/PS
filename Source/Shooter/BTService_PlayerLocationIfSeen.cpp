@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Pawn.h"
 #include "AIController.h"
+#include "EnemyShooter.h"
 
 UBTService_PlayerLocationIfSeen::UBTService_PlayerLocationIfSeen() 
 {
@@ -26,13 +27,16 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp
     {
         return;
     }
-
-    if (OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn))
-    {
-        OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
+    AEnemyShooter* EnemyShooter = Cast<AEnemyShooter> (OwnerComp.GetAIOwner()->GetPawn()); 
+    if(EnemyShooter){
+        if (OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn) && EnemyShooter->GetIsWakeUp())
+        {
+            OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
+        }
+        else
+        {
+            OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
+        }
     }
-    else
-    {
-        OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
-    }
+    
 }

@@ -151,7 +151,6 @@ void AEnemy::BeginPlay()
 			TEXT("PatrolPoint2"),
 			WorldPatrolPoint2);
 
-		UE_LOG(LogTemp, Warning, TEXT("in enemy controller"));
 		EnemyController->RunBehaviorTree(BehaviorTree);
 	}
 }
@@ -188,6 +187,7 @@ void AEnemy::Die()
 			FName("Dead"),
 			true
 		);
+
 		EnemyController->StopMovement();
 	}
 
@@ -223,7 +223,8 @@ void AEnemy::Die()
 	{
 		SpawnWeapon(SpawnedItemBoxSize);
 	}
-	
+	DetachFromControllerPendingDestroy();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AEnemy::SpawnAmmo(float SpawnedItemBoxSize){

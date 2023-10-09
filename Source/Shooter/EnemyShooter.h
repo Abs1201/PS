@@ -25,9 +25,15 @@ private:
 	UPROPERTY()
 	AEnemyShooterGun* EnemyShooterGun;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Start", meta = (AllowPrivateAccess = "true"))
+	bool bIsWakeUp = false;
+
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void Shoot();
+
+	bool GetIsWakeUp(){ return bIsWakeUp; }
 };
