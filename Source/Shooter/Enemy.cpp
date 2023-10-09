@@ -187,6 +187,7 @@ void AEnemy::Die()
 			FName("Dead"),
 			true
 		);
+
 		EnemyController->StopMovement();
 	}
 
@@ -222,7 +223,8 @@ void AEnemy::Die()
 	{
 		SpawnWeapon(SpawnedItemBoxSize);
 	}
-	
+	DetachFromControllerPendingDestroy();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AEnemy::SpawnAmmo(float SpawnedItemBoxSize){

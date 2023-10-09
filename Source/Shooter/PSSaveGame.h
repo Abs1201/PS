@@ -20,7 +20,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	TArray<FDateTime> Times;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
-	int32 ClearedStage=0;
+	int32 ClearedStage=-1;
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
 	// TArray<int32> Ranks;
 	

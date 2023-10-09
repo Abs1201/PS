@@ -10,7 +10,8 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"UMG"
+				"UMG",
+				"AIModule"
 			]
 		}
 	],
@@ -20,5 +21,13 @@
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/01f39767dc6b4290877f38365787cbf8"
 		}
+	],
+	"TargetPlatforms": [
+		"Windows",
+		"Android",
+		"HoloLens",
+		"IOS",
+		"Linux",
+		"Mac"
 	]
 }
