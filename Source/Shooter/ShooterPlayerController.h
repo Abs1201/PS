@@ -19,6 +19,8 @@ public:
 	UFUNCTION()
 	void OnEndGame();
 
+	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -34,5 +36,13 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Widgets, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UUserWidget> ResultWidget;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> LoseScreenClass;
+
+	UPROPERTY(EditAnywhere)
+	float RestartDelay = 5;
+
+	FTimerHandle RestartTimer;
 	
 };

@@ -11,6 +11,10 @@ void AEnemyShooter::BeginPlay()
 {
     Super::BeginPlay();
 
+    GetMesh()->SetCollisionResponseToChannel(
+		ECollisionChannel::ECC_Visibility, 
+		ECollisionResponse::ECR_Ignore);
+
     EnemyShooterGun = GetWorld()->SpawnActor<AEnemyShooterGun>(EnemyShooterGunClass);
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
     if(EnemyShooterGun){
@@ -34,6 +38,7 @@ void AEnemyShooter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
+    
 }
 
 void AEnemyShooter::Shoot()
@@ -42,3 +47,14 @@ void AEnemyShooter::Shoot()
 		EnemyShooterGun->PullTrigger();
 	}
 }
+
+void AEnemyShooter::EndWakeUp()
+{
+    GetMesh()->SetCollisionResponseToChannel(
+		ECollisionChannel::ECC_Visibility, 
+		ECollisionResponse::ECR_Block);
+    
+    bIsEndWakeUp = true;
+}
+
+

@@ -26,6 +26,7 @@
 #include "Private/MapElement/Door.h"
 #include "Private/Item/DoorKey.h"
 #include "PSGameUserSettings.h"
+#include "ShooterPlayerController.h"
 //#include "Private/Item/ETCItem.h"
 //#include "Private/Item/UseItem.h"
 
@@ -180,6 +181,16 @@ void AShooterCharacter::Die()
 		AnimInstance->Montage_Play(DeathMontage);
 		AnimInstance->Montage_JumpToSection(FName("DeathA"), DeathMontage);
 	}
+	AShooterPlayerController* ShooterPlayerController = Cast<AShooterPlayerController>(GetController());
+	if(ShooterPlayerController){
+		ShooterPlayerController->GameHasEnded(this, false);
+	}
+	else{
+		UE_LOG(LogTemp, Warning, TEXT("fuck"));
+	}
+	DetachFromControllerPendingDestroy();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 }
 
 void AShooterCharacter::FinishDeath()

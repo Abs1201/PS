@@ -27,6 +27,8 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Start", meta = (AllowPrivateAccess = "true"))
 	bool bIsWakeUp = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Start", meta = (AllowPrivateAccess = "true"))
+	bool bIsEndWakeUp = false;
 
 
 public:
@@ -35,5 +37,9 @@ public:
 
 	void Shoot();
 
+	UFUNCTION(BlueprintCallable)
+	void EndWakeUp();
+
+	bool GetIsEndWakeUp(){ return bIsEndWakeUp; }
 	bool GetIsWakeUp(){ return bIsWakeUp; }
 };

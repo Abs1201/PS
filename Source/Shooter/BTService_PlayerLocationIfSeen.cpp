@@ -29,7 +29,7 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp
     }
     AEnemyShooter* EnemyShooter = Cast<AEnemyShooter> (OwnerComp.GetAIOwner()->GetPawn()); 
     if(EnemyShooter){
-        if (OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn) && EnemyShooter->GetIsWakeUp())
+        if (OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn) && EnemyShooter->GetIsEndWakeUp())
         {
             OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
         }
