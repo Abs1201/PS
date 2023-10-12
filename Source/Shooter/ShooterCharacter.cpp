@@ -27,6 +27,7 @@
 #include "Private/Item/DoorKey.h"
 #include "PSGameUserSettings.h"
 #include "ShooterPlayerController.h"
+#include "Math/UnrealMathUtility.h"
 //#include "Private/Item/ETCItem.h"
 //#include "Private/Item/UseItem.h"
 
@@ -309,6 +310,8 @@ void AShooterCharacter::FireWeapon()
 	{
 		PlayFireSound();
 		SendBullet();
+		AddControllerPitchInput(FMath::RandRange(-0.15f, -0.2f));
+		AddControllerYawInput(FMath::RandRange(-0.1f, 0.1f));
 		PlayGunfireMontage();
 		EquippedWeapon->DecrementAmmo();
 

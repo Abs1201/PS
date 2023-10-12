@@ -40,9 +40,16 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> LoseScreenClass;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Widgets, meta = (AllowPrivateAccess = "true"))
 	float RestartDelay = 5;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Widgets, meta = (AllowPrivateAccess = "true"))
+	bool bCanInteract = false;
+
 	FTimerHandle RestartTimer;
+
+public:
+	bool GetCanInteract(){ return bCanInteract; }
+	void SetCanInteract(bool NewInteract){ bCanInteract = NewInteract; }
 	
 };
