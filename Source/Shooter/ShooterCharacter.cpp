@@ -187,7 +187,7 @@ void AShooterCharacter::Die()
 		ShooterPlayerController->GameHasEnded(this, false);
 	}
 	else{
-		UE_LOG(LogTemp, Warning, TEXT("fuck"));
+		UE_LOG(LogTemp, Warning, TEXT("ulog: AShooterCharacter::die()"));
 	}
 	DetachFromControllerPendingDestroy();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
